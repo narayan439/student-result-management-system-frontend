@@ -1,40 +1,99 @@
 <div class="login-container">
+  <div class="login-card">
+    
+    <!-- Header -->
+    <div class="login-header">
+      <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        <h1 class="school-name">DELHI PUBLIC SCHOOL</h1>
+      </div>
+      <h2 class="login-title">
+        <i class="fas fa-sign-in-alt"></i> Login Portal
+      </h2>
+      <p class="login-subtitle">Access your account securely</p>
+    </div>
 
-  <h2>Login</h2>
+    <!-- Login Form -->
+    <form #loginForm="ngForm" (ngSubmit)="onLogin()" class="login-form">
+      
+      <!-- Email Input -->
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <div class="input-container">
+          <i class="fas fa-envelope"></i>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="loginData.email"
+            name="email"
+            required
+            email
+            placeholder="Enter your email address"
+            [disabled]="isLoading"
+          >
+        </div>
+      </div>
 
-  <form #loginForm="ngForm" (ngSubmit)="onLogin()">
+      <!-- Password Input -->
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="input-container">
+          <i class="fas fa-lock"></i>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            [(ngModel)]="loginData.password"
+            name="password"
+            required
+            placeholder="Enter your password"
+            [disabled]="isLoading"
+          >
+          <span class="input-icon" (click)="togglePasswordVisibility()">
+            <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </span>
+        </div>
+      </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
-      <input
-        matInput
-        [(ngModel)]="loginData.email"
-        name="email"
-        required 
-        email
+      <!-- Login Button -->
+      <button
+        class="login-btn"
+        type="submit"
+        [disabled]="loginForm.invalid || isLoading"
       >
-    </mat-form-field>
+        <span *ngIf="!isLoading">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Password</mat-label>
-      <input
-        matInput
-        type="password"
-        [(ngModel)]="loginData.password"
-        name="password"
-        required
-      >
-    </mat-form-field>
+    </form>
 
-    <button
-      mat-raised-button
-      color="primary"
-      class="full-width"
-      [disabled]="loginForm.invalid"
-    >
-      Login
-    </button>
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="back-btn" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i> Back to Home
+      </button>
+    </div>
 
-  </form>
+    <!-- Additional Options -->
+    <div class="login-options">
+      
+      <p class="register-link">
+        Need an account?
+        <a href="#">Contact Administration</a>
+      </p>
+    </div>
 
+    <!-- Demo Credentials -->
+    <div class="demo-credentials">
+      <h4><i class="fas fa-info-circle"></i> Demo Credentials</h4>
+      <ul>
+        <li><strong>Admin:</strong> admin@school.com / admin123</li>
+        <li><strong>Teacher:</strong> teacher1@school.com / teacher123</li>
+        <li><strong>Student:</strong> student1@school.com / student123</li>
+      </ul>
+    </div>
+
+    
+  </div>
 </div>
