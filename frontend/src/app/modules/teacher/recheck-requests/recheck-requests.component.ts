@@ -6,5 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./recheck-requests.component.css']
 })
 export class RecheckRequestsComponent {
+  cols = ['rollNo', 'subject', 'reason', 'action'];
+
+requests = [
+  { rollNo: '21', subject: 'Maths', reason: 'Marks not correct' },
+  { rollNo: '34', subject: 'Science', reason: 'Please re-evaluate' }
+];
+
 
 }

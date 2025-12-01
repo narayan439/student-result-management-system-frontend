@@ -11,25 +11,22 @@ export class ManageStudentsComponent implements OnInit {
   displayedColumns: string[] = ['name', 'email', 'className', 'rollNo', 'actions'];
 
   students = [
-    {
-      name: 'Narayan',
-      email: 'narayan@student.com',
-      className: '10',
-      rollNo: '23'
-    },
-    {
-      name: 'Rakesh',
-      email: 'rakesh@student.com',
-      className: '9',
-      rollNo: '19'
-    }
+    { name: 'Narayan', email: 'narayan@student.com', className: '10', rollNo: '23' },
+    { name: 'Rakesh', email: 'rakesh@student.com', className: '9', rollNo: '19' }
   ];
 
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
-    // Later use backend API:
+    // TODO: Fetch from backend later
     // this.adminService.getAllStudents().subscribe(res => this.students = res);
+  }
+
+  deleteStudent(rollNo: any) {
+    if (confirm("Are you sure you want to delete this student?")) {
+      this.students = this.students.filter(s => s.rollNo !== rollNo);
+      alert("Student Deleted Successfully!");
+    }
   }
 
 }

@@ -7,4 +7,15 @@ import { Component } from '@angular/core';
 })
 export class RequestRecheckComponent {
 
+  subjects = ['Maths', 'Science', 'English', 'History', 'Geography'];
+
+  recheck = {
+    subject: '',
+    reason: ''
+  };
+
+  submitRecheck() {
+    alert(`Recheck request for ${this.recheck.subject} submitted!`);
+    this.recheck = { subject: '', reason: '' };
+  }
 }

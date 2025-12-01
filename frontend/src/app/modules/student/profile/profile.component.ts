@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class ProfileComponent {
 
+  student = {
+    name: 'Narayan',
+    email: 'narayan@student.com',
+    rollNo: '23',
+    className: '10',
+    dob: '2005-02-20'
+  };
+
 }

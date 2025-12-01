@@ -7,4 +7,18 @@ import { Component } from '@angular/core';
 })
 export class AddMarksComponent {
 
+  marks = {
+  rollNo: '',
+  subject: '',
+  score: null
+};
+
+subjects = ['Maths', 'Science', 'English', 'History', 'Geography'];
+
+submitMarks() {
+  alert(`Marks added for Roll No: ${this.marks.rollNo}`);
+  this.marks = { rollNo: '', subject: '', score: null };
+}
+
+
 }

@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class TrackRecheckComponent {
 
+  columns: string[] = ['subject', 'date', 'status'];
+
+  requests = [
+    { subject: 'Maths', date: '2025-12-01', status: 'Pending' },
+    { subject: 'Science', date: '2025-11-28', status: 'Completed' }
+  ];
+
 }
