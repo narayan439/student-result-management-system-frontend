@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 0px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -94,7 +94,7 @@
 
 .input-group input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 14px 0px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 16px;
