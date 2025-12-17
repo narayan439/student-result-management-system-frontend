@@ -1,17 +1,55 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { StudentService } from '../../core/services/student.service';
+import { AuthService } from '../../core/services/auth.service';
+import { Student } from '../../core/models/student.model';
 
 @Component({
   selector: 'app-student-dashboard',
   templateUrl: './student-dashboard.component.html',
   styleUrls: ['./student-dashboard.component.css']
 })
-export class StudentDashboardComponent {
+export class StudentDashboardComponent implements OnInit {
 
   mobileMenuOpen = false;
+  currentStudent: Student | null = null;
+  studentName: string = 'Student';
+  studentClass: string = '';
+  studentRoll: string = '';
 
+  constructor(
+    private router: Router,
+    private studentService: StudentService,
+    private authService: AuthService
+  ) {}
 
-  constructor(private router: Router) {}
+  ngOnInit(): void {
+    this.loadCurrentStudent();
+  }
+
+  /**
+   * Load current logged-in student's data
+   */
+  loadCurrentStudent(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || currentUser.role !== 'STUDENT') {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Get student by email
+    const students = this.studentService.getAllStudentsSync();
+    this.currentStudent = students.find(s => s.email === currentUser.email) || null;
+
+    if (this.currentStudent) {
+      this.studentName = this.currentStudent.name;
+      this.studentClass = this.currentStudent.className;
+      this.studentRoll = this.currentStudent.rollNo;
+      console.log('✓ Student loaded:', this.currentStudent);
+    } else {
+      console.error('✗ Student not found for email:', currentUser.email);
+    }
+  }
 
   // Toggle mobile menu
   toggleMobileMenu() {
@@ -25,7 +63,7 @@ export class StudentDashboardComponent {
 
   // Logout function
   logout() {
-    localStorage.clear();
+    this.authService.logout();
     this.router.navigate(['/']);
   }
 
@@ -49,7 +87,4 @@ export class StudentDashboardComponent {
     this.router.navigate(['/student/profile']);
     this.closeMobileMenu();
   }
-  /* Force show menu button on mobile */
-
-
 }

@@ -16,8 +16,8 @@
       <div class="profile-avatar">
         <mat-icon class="avatar-icon">school</mat-icon>
       </div>
-      <h3 class="profile-name">{{ student.name }}</h3>
-      <p class="profile-class">Class {{ student.className }}</p>
+      <h3 class="profile-name">{{ student?.name }}</h3>
+      <p class="profile-class">Class {{ student?.className }}</p>
     </div>
 
     <!-- Profile Information -->
@@ -31,7 +31,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Full Name</span>
-            <p class="info-value">{{ student.name }}</p>
+            <p class="info-value">{{ student?.name }}</p>
           </div>
         </div>
 
@@ -42,7 +42,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Email Address</span>
-            <p class="info-value">{{ student.email }}</p>
+            <p class="info-value">{{ student?.email }}</p>
           </div>
         </div>
 
@@ -53,7 +53,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Roll Number</span>
-            <p class="info-value">{{ student.rollNo }}</p>
+            <p class="info-value">{{ student?.rollNo }}</p>
           </div>
         </div>
 
@@ -64,7 +64,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Class</span>
-            <p class="info-value">{{ student.className }}</p>
+            <p class="info-value">{{ student?.className }}</p>
           </div>
         </div>
 
@@ -75,58 +75,77 @@
           </div>
           <div class="info-content">
             <span class="info-label">Date of Birth</span>
-            <p class="info-value">{{ student.dob }}</p>
+            <p class="info-value">{{ student?.dob }}</p>
           </div>
         </div>
 
-        <!-- Additional Information -->
-        <div class="info-item">
-          <div class="info-icon">
-            <mat-icon>person</mat-icon>
-          </div>
-          <div class="info-content">
-            <span class="info-label">Father's Name</span>
-            <p class="info-value">{{ student.fatherName }}</p>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-icon">
-            <mat-icon>person_outline</mat-icon>
-          </div>
-          <div class="info-content">
-            <span class="info-label">Mother's Name</span>
-            <p class="info-value">{{ student.motherName }}</p>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-icon">
-            <mat-icon>location_on</mat-icon>
-          </div>
-          <div class="info-content">
-            <span class="info-label">Address</span>
-            <p class="info-value">{{ student.address }}</p>
-          </div>
-        </div>
-
+        <!-- Phone Number -->
         <div class="info-item">
           <div class="info-icon">
             <mat-icon>phone</mat-icon>
           </div>
           <div class="info-content">
-            <span class="info-label">Phone</span>
-            <p class="info-value">{{ student.phone }}</p>
+            <span class="info-label">Phone Number</span>
+            <p class="info-value">{{ student?.phone }}</p>
+          </div>
+        </div>
+
+        <!-- Student ID -->
+        <div class="info-item">
+          <div class="info-icon">
+            <mat-icon>verified_user</mat-icon>
+          </div>
+          <div class="info-content">
+            <span class="info-label">Student ID</span>
+            <p class="info-value">{{ student?.studentId }}</p>
           </div>
         </div>
 
       </div>
     </div>
+
+    <!-- Important Information Section -->
+    <div class="important-info-section">
+      <h4>
+        <mat-icon>info</mat-icon> Important Information
+      </h4>
+      <div class="info-grid-2">
+        <div class="info-box">
+          <mat-icon class="box-icon">schedule</mat-icon>
+          <div>
+            <strong>Academic Year</strong>
+            <p>2024-2025</p>
+          </div>
+        </div>
+        <div class="info-box">
+          <mat-icon class="box-icon">location_on</mat-icon>
+          <div>
+            <strong>School</strong>
+            <p>Delhi Public School</p>
+          </div>
+        </div>
+        <div class="info-box">
+          <mat-icon class="box-icon">phone</mat-icon>
+          <div>
+            <strong>School Contact</strong>
+            <p>+91-11-4141-4141</p>
+          </div>
+        </div>
+        <div class="info-box">
+          <mat-icon class="box-icon">public</mat-icon>
+          <div>
+            <strong>School Website</strong>
+            <p>www.dps.edu.in</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </mat-card>
 
   <!-- Footer -->
   <div class="profile-footer">
-    <p>© 2023 Delhi Public School</p>
+    <p>© 2024 Delhi Public School</p>
     <p>Profile information is read-only</p>
   </div>
 

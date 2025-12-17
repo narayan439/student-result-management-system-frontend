@@ -13,80 +13,61 @@ export class StudentService {
   private studentsSubject = new BehaviorSubject<Student[]>([]);
   public students$ = this.studentsSubject.asObservable();
 
-  // Sample students data - 200 students
+  // Sample students data - 50 students (5 per class, 10 classes)
   private sampleStudents: Student[] = this.generateSampleStudents();
 
   private generateSampleStudents(): Student[] {
-    const classes = [
-      'Class 1 - A', 'Class 1 - B', 'Class 1 - C', 'Class 1 - D', 'Class 1 - E',
-      'Class 2 - A', 'Class 2 - B', 'Class 2 - C', 'Class 2 - D', 'Class 2 - E',
-      'Class 3 - A', 'Class 3 - B', 'Class 3 - C', 'Class 3 - D', 'Class 3 - E',
-      'Class 4 - A', 'Class 4 - B', 'Class 4 - C', 'Class 4 - D', 'Class 4 - E',
-      'Class 5 - A', 'Class 5 - B', 'Class 5 - C', 'Class 5 - D', 'Class 5 - E',
-      'Class 6 - A', 'Class 6 - B', 'Class 6 - C', 'Class 6 - D', 'Class 6 - E',
-      'Class 7 - A', 'Class 7 - B', 'Class 7 - C', 'Class 7 - D', 'Class 7 - E',
-      'Class 8 - A', 'Class 8 - B', 'Class 8 - C', 'Class 8 - D', 'Class 8 - E',
-      'Class 9 - A', 'Class 9 - B', 'Class 9 - C', 'Class 9 - D', 'Class 9 - E',
-      'Class 10 - A', 'Class 10 - B', 'Class 10 - C', 'Class 10 - D', 'Class 10 - E'
-    ];
-
     const firstNames = [
       'Arjun', 'Priya', 'Rahul', 'Anjali', 'Vikram', 'Sneha', 'Aditya', 'Neha', 'Rohan', 'Divya',
       'Akshay', 'Pooja', 'Nikhil', 'Shreya', 'Sanjay', 'Ananya', 'Varun', 'Isha', 'Manish', 'Riya',
-      'Harshit', 'Kavya', 'Aman', 'Navya', 'Shashank', 'Diya', 'Abhishek', 'Sakshi', 'Karan', 'Veda',
-      'Aryan', 'Avni', 'Bhuvan', 'Anushka', 'Chirag', 'Aisha', 'Dhaval', 'Aarushi', 'Eshan', 'Avika',
-      'Faisal', 'Bhavna', 'Gaurav', 'Charvi', 'Harsh', 'Drishti', 'Ishaan', 'Esha', 'Jatin', 'Gita'
+      'Harshit', 'Kavya', 'Aman', 'Navya', 'Shashank', 'Diya', 'Abhishek', 'Sakshi', 'Karan', 'Veda'
     ];
 
     const lastNames = [
       'Kumar', 'Singh', 'Patel', 'Sharma', 'Verma', 'Gupta', 'Yadav', 'Nair', 'Desai', 'Bhat',
-      'Reddy', 'Rao', 'Chopra', 'Malhotra', 'Kapoor', 'Mishra', 'Agarwal', 'Jain', 'Srivastava', 'Dubey',
-      'Pandey', 'Tiwari', 'Saxena', 'Bhatt', 'Iyer', 'Menon', 'Bose', 'Dey', 'Roy', 'Mukherjee'
+      'Reddy', 'Rao', 'Chopra', 'Malhotra', 'Kapoor', 'Mishra', 'Agarwal', 'Jain', 'Srivastava', 'Dubey'
     ];
 
     const students: Student[] = [];
     let studentId = 1;
 
-    for (let i = 0; i < 200; i++) {
-      const classIndex = i % classes.length;
-      const className = classes[classIndex];
+    // 5 students per class, for classes 1-10
+    for (let classNum = 1; classNum <= 10; classNum++) {
+      const className = `Class ${classNum}`;
       
-      // Extract class number and section from className (e.g., "Class 10 - A" -> 10, A)
-      const classMatch = className.match(/Class\s(\d+)\s-\s([A-E])/);
-      const classNumber = classMatch ? classMatch[1] : '1';
-      const section = classMatch ? classMatch[2] : 'A';
-      
-      // Generate roll number as: classNumberSectionSequential (e.g., 10A01, 10A02)
-      const sequenceInClass = (i % 4) + 1; // 1-4 students per class (200 students / 50 classes = 4)
-      const rollNo = `${classNumber}${section}${String(sequenceInClass).padStart(2, '0')}`;
-      
-      const firstNameIndex = Math.floor(Math.random() * firstNames.length);
-      const lastNameIndex = Math.floor(Math.random() * lastNames.length);
-      const firstName = firstNames[firstNameIndex];
-      const lastName = lastNames[lastNameIndex];
-      const name = `${firstName} ${lastName}`;
-      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${studentId}@student.com`;
-      
-      // Generate random date of birth between 2005-2012
-      const year = 2005 + Math.floor(Math.random() * 8);
-      const month = Math.floor(Math.random() * 12) + 1;
-      const day = Math.floor(Math.random() * 28) + 1;
-      const dob = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      
-      const phone = `987654${String(studentId).padStart(4, '0')}`;
+      // 5 students per class
+      for (let rollSequence = 1; rollSequence <= 5; rollSequence++) {
+        const firstNameIndex = (studentId - 1) % firstNames.length;
+        const lastNameIndex = (studentId - 1) % lastNames.length;
+        const firstName = firstNames[firstNameIndex];
+        const lastName = lastNames[lastNameIndex];
+        const name = `${firstName} ${lastName}`;
+        const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${studentId}@student.com`;
+        
+        // Roll number format: classNumber + "A" + sequence (e.g., 10A01, 10A06, 10A11)
+        const rollNo = `${classNum}A${String(rollSequence).padStart(2, '0')}`;
+        
+        // Generate random date of birth between 2005-2012
+        const year = 2005 + Math.floor(Math.random() * 8);
+        const month = Math.floor(Math.random() * 12) + 1;
+        const day = Math.floor(Math.random() * 28) + 1;
+        const dob = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        
+        const phone = `987654${String(studentId).padStart(4, '0')}`;
 
-      students.push({
-        studentId,
-        name,
-        email,
-        className,
-        rollNo,
-        dob,
-        phone,
-        isActive: true
-      });
+        students.push({
+          studentId,
+          name,
+          email,
+          className,
+          rollNo,
+          dob,
+          phone,
+          isActive: true
+        });
 
-      studentId++;
+        studentId++;
+      }
     }
 
     return students;
@@ -111,6 +92,13 @@ export class StudentService {
           return of(sampleStudents);
         })
       );
+  }
+
+  /**
+   * Get all students synchronously (for authentication)
+   */
+  getAllStudentsSync(): Student[] {
+    return this.studentsSubject.value || this.sampleStudents;
   }
 
   /**

@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { StudentService } from './student.service';
 
 export interface SchoolClass {
   classId: number;
   className: string;
   classNumber: number;
-  section: string;
+  studentCount: number;
+  maxCapacity: number;
   isActive: boolean;
 }
 
@@ -15,30 +17,36 @@ export interface SchoolClass {
 export class ClassesService {
   
   private classesSubject = new BehaviorSubject<SchoolClass[]>(this.generateAllClasses());
-
   classes$ = this.classesSubject.asObservable();
 
-  constructor() {}
+  constructor(private studentService: StudentService) {}
 
-  // Generate all classes (1-10) with all sections (A-E) = 50 classes
+  // Generate all classes (1-10) only = 10 classes total
   private generateAllClasses(): SchoolClass[] {
     const classes: SchoolClass[] = [];
-    let classId = 1;
 
     for (let classNum = 1; classNum <= 10; classNum++) {
-      for (const section of ['A', 'B', 'C', 'D', 'E']) {
-        classes.push({
-          classId,
-          className: `Class ${classNum} - ${section}`,
-          classNumber: classNum,
-          section,
-          isActive: true
-        });
-        classId++;
-      }
+      classes.push({
+        classId: classNum,
+        className: `Class ${classNum}`,
+        classNumber: classNum,
+        studentCount: this.getStudentCountInClass(classNum),
+        maxCapacity: 60,
+        isActive: true
+      });
     }
 
     return classes;
+  }
+
+  // Get student count in a specific class
+  private getStudentCountInClass(classNum: number): number {
+    const students = this.studentService.getAllStudentsSync();
+    return students.filter(s => {
+      const classMatch = s.className.match(/Class\s(\d+)/);
+      const studClassNum = classMatch ? parseInt(classMatch[1]) : 0;
+      return studClassNum === classNum;
+    }).length;
   }
 
   // Get all classes
@@ -51,7 +59,56 @@ export class ClassesService {
     return this.classesSubject.value;
   }
 
-  // Add a new class
+  // Get a specific class by class number
+  getClassByNumber(classNumber: number): SchoolClass | undefined {
+    const classes = this.classesSubject.value;
+    return classes.find(c => c.classNumber === classNumber);
+  }
+
+  // Get students in a specific class
+  getStudentsInClass(classNumber: number): any[] {
+    const students = this.studentService.getAllStudentsSync();
+    return students.filter(s => {
+      const classMatch = s.className.match(/Class\s(\d+)/);
+      const studClassNum = classMatch ? parseInt(classMatch[1]) : 0;
+      return studClassNum === classNumber;
+    });
+  }
+
+  // Get class capacity and current count
+  getClassCapacity(classNumber: number): { current: number; max: number } {
+    const students = this.getStudentsInClass(classNumber);
+    const classData = this.getClassByNumber(classNumber);
+    return {
+      current: students.length,
+      max: classData?.maxCapacity || 60
+    };
+  }
+
+  // Check if class has available seats
+  hasAvailableSeats(classNumber: number): boolean {
+    const capacity = this.getClassCapacity(classNumber);
+    return capacity.current < capacity.max;
+  }
+
+  // Add a student to a class
+  addStudentToClass(classNumber: number): boolean {
+    if (!this.hasAvailableSeats(classNumber)) {
+      console.warn(`Class ${classNumber} is at full capacity`);
+      return false;
+    }
+    // Student assignment logic would be handled by StudentService
+    this.updateClassCount();
+    return true;
+  }
+
+  // Update class student counts
+  updateClassCount(): void {
+    const updatedClasses = this.generateAllClasses();
+    this.classesSubject.next(updatedClasses);
+  }
+
+  // Add a new class (manual)
   addClass(schoolClass: SchoolClass): void {
     const currentClasses = this.classesSubject.value;
     const newClasses = [...currentClasses, schoolClass];
@@ -79,3 +136,4 @@ export class ClassesService {
     this.classesSubject.next(classes);
   }
 }
+
