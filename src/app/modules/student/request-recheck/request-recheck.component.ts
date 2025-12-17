@@ -1,106 +1,101 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { StudentService } from '../../../core/services/student.service';
+import { SubjectService } from '../../../core/services/subject.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { Student } from '../../../core/models/student.model';
 
 @Component({
   selector: 'app-request-recheck',
   templateUrl: './request-recheck.component.html',
   styleUrls: ['./request-recheck.component.css']
 })
-export class RequestRecheckComponent {
+export class RequestRecheckComponent implements OnInit {
 
-  subjects = ['Maths', 'Science', 'English', 'History', 'Geography'];
+  student: Student | null = null;
+  subjects: string[] = [];
   
-  students = [
-    { rollNo: '101', name: 'Rahul Sharma', className: '10A' },
-    { rollNo: '102', name: 'Priya Patel', className: '10B' },
-    { rollNo: '103', name: 'Amit Kumar', className: '9A' },
-    { rollNo: '104', name: 'Sneha Singh', className: '9B' },
-    { rollNo: '105', name: 'Rohan Verma', className: '11A' },
-    { rollNo: '106', name: 'Neha Gupta', className: '11B' },
-    { rollNo: '107', name: 'Arun Yadav', className: '12A' },
-    { rollNo: '108', name: 'Pooja Mishra', className: '12B' },
-    { rollNo: '109', name: 'Vikas Singh', className: '10A' },
-    { rollNo: '110', name: 'Anjali Tiwari', className: '10B' }
-  ];
-
-  // Add these properties for search and pagination
-  searchQuery = '';
-  pageSize = 5;
-  currentPage = 1;
-  totalPages = 1;
-
   recheck = {
     rollNo: '',
     subject: '',
     reason: ''
   };
 
-  get filteredStudents() {
-    if (!this.searchQuery) {
-      return this.students;
+  constructor(
+    private studentService: StudentService,
+    private subjectService: SubjectService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadStudentAndSubjects();
+  }
+
+  /**
+   * Load current student and available subjects
+   */
+  loadStudentAndSubjects(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || currentUser.role !== 'STUDENT') {
+      this.router.navigate(['/login']);
+      return;
     }
-    return this.students.filter(student =>
-      student.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      student.rollNo.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      student.className.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
-  }
 
-  get paginatedStudents() {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    return this.filteredStudents.slice(startIndex, endIndex);
-  }
+    // Get student by email
+    const students = this.studentService.getAllStudentsSync();
+    this.student = students.find(s => s.email === currentUser.email) || null;
 
-  get totalItems() {
-    return this.filteredStudents.length;
-  }
-
-  updatePagination() {
-    this.totalPages = Math.ceil(this.totalItems / this.pageSize);
-    if (this.currentPage > this.totalPages && this.totalPages > 0) {
-      this.currentPage = this.totalPages;
+    if (this.student) {
+      this.recheck.rollNo = this.student.rollNo;
+      console.log('✓ Student loaded for recheck:', this.student);
+    } else {
+      console.error('✗ Student not found for email:', currentUser.email);
+      alert('Student profile not found. Please login again.');
+      this.router.navigate(['/login']);
+      return;
     }
-  }
 
-  onSearch() {
-    this.currentPage = 1;
-    this.updatePagination();
-  }
-
-  onPageSizeChange() {
-    this.currentPage = 1;
-    this.updatePagination();
-  }
-
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
+    // Load subjects
+    this.subjectService.getAllSubjects().subscribe({
+      next: (subjects: any) => {
+        const subjectsArray = Array.isArray(subjects) ? subjects : [];
+        this.subjects = subjectsArray.map((s: any) => s.subjectName || s);
+        console.log('✓ Subjects loaded:', this.subjects);
+      },
+      error: (err) => {
+        console.error('Error loading subjects:', err);
+        this.subjects = ['Mathematics', 'Science', 'English', 'History', 'Geography'];
+      }
+    });
   }
 
   submitRecheck() {
     if (!this.recheck.rollNo) {
-      alert('Please select a student from the list below');
+      alert('Student information missing. Please reload the page.');
       return;
     }
-    alert(`Recheck request for ${this.recheck.rollNo} in ${this.recheck.subject} submitted!`);
-    this.recheck = { rollNo: '', subject: '', reason: '' };
-  }
+    if (!this.recheck.subject) {
+      alert('Please select a subject');
+      return;
+    }
+    if (!this.recheck.reason || this.recheck.reason.trim().length === 0) {
+      alert('Please provide a reason for recheck');
+      return;
+    }
 
-  selectStudent(rollNo: string) {
-    this.recheck.rollNo = rollNo;
-    // Scroll to form
-    setTimeout(() => {
-      const formElement = document.querySelector('.form-container');
-      if (formElement) {
-        formElement.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    // Submit recheck request
+    const recheckRequest = {
+      studentId: this.student?.studentId,
+      rollNo: this.recheck.rollNo,
+      subject: this.recheck.subject,
+      reason: this.recheck.reason,
+      status: 'pending',
+      requestDate: new Date().toISOString()
+    };
+
+    console.log('Submitting recheck request:', recheckRequest);
+    alert(`✓ Recheck request for ${this.recheck.subject} submitted successfully!`);
+    this.recheck = { rollNo: this.student?.rollNo || '', subject: '', reason: '' };
   }
 }

@@ -298,6 +298,13 @@ export class TeacherService {
   }
 
   /**
+   * Get all teachers synchronously (for authentication)
+   */
+  getAllTeachersSync(): Teacher[] {
+    return this.teachersSubject.value || this.sampleTeachers;
+  }
+
+  /**
    * Get teachers from local data (for offline support)
    */
   getTeachersFromLocal(): Teacher[] {

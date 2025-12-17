@@ -9,7 +9,7 @@ import { ClassesService, SchoolClass } from '../../../core/services/classes.serv
 })
 export class ManageClassesComponent implements OnInit {
 
-  displayedColumns: string[] = ['className', 'classNumber', 'section', 'status', 'actions'];
+  displayedColumns: string[] = ['className', 'classNumber', 'studentCount', 'status', 'actions'];
   dataSource!: MatTableDataSource<SchoolClass>;
   
   classes: SchoolClass[] = [];
@@ -26,15 +26,12 @@ export class ManageClassesComponent implements OnInit {
   // Form inputs
   newClassName = '';
   newClassNumber: number | null = null;
-  newSection: string = '';
   
   // Filter
   searchTerm = '';
   selectedClass: string = '';
-  selectedSection: string = '';
   
   classNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  sections = ['A', 'B', 'C', 'D', 'E'];
 
   constructor(private classesService: ClassesService) {
     // Load initial data from service
@@ -46,11 +43,10 @@ export class ManageClassesComponent implements OnInit {
     this.filterClasses();
   }
 
-  // Update class name based on class number and section
-  // Update class name based on class number and section
+  // Update class name based on class number
   updateClassName(): void {
-    if (this.newClassNumber && this.newSection) {
-      this.newClassName = `Class ${this.newClassNumber} - ${this.newSection}`;
+    if (this.newClassNumber) {
+      this.newClassName = `Class ${this.newClassNumber}`;
     }
   }
 
@@ -73,7 +69,6 @@ export class ManageClassesComponent implements OnInit {
       this.editingClass = schoolClass;
       this.newClassName = schoolClass.className;
       this.newClassNumber = schoolClass.classNumber;
-      this.newSection = schoolClass.section;
       this.showEditForm = true;
     } else {
       this.showEditForm = false;
@@ -83,14 +78,14 @@ export class ManageClassesComponent implements OnInit {
 
   // Add new class
   addClass(): void {
-    if (!this.newClassName.trim() || !this.newClassNumber || !this.newSection) {
+    if (!this.newClassName.trim() || !this.newClassNumber) {
       alert('Please fill all fields');
       return;
     }
 
     // Check for duplicate class
-    if (this.classes.some(c => c.classNumber === this.newClassNumber && c.section === this.newSection && (!this.editingClass || c.classId !== this.editingClass.classId))) {
-      alert('This class and section combination already exists!');
+    if (this.classes.some(c => c.classNumber === this.newClassNumber && (!this.editingClass || c.classId !== this.editingClass.classId))) {
+      alert('This class already exists!');
       return;
     }
 
@@ -98,7 +93,8 @@ export class ManageClassesComponent implements OnInit {
       classId: this.classes.length > 0 ? Math.max(...this.classes.map(c => c.classId)) + 1 : 1,
       className: this.newClassName.trim(),
       classNumber: this.newClassNumber!,
-      section: this.newSection,
+      studentCount: 0,
+      maxCapacity: 60,
       isActive: true
     };
 
@@ -114,14 +110,14 @@ export class ManageClassesComponent implements OnInit {
   updateClass(): void {
     if (!this.editingClass) return;
 
-    if (!this.newClassName.trim() || !this.newClassNumber || !this.newSection) {
+    if (!this.newClassName.trim() || !this.newClassNumber) {
       alert('Please fill all fields');
       return;
     }
 
     // Check for duplicate class
-    if (this.classes.some(c => c.classNumber === this.newClassNumber && c.section === this.newSection && c.classId !== this.editingClass!.classId)) {
-      alert('This class and section combination already exists!');
+    if (this.classes.some(c => c.classNumber === this.newClassNumber && c.classId !== this.editingClass!.classId)) {
+      alert('This class already exists!');
       return;
     }
 
@@ -130,8 +126,7 @@ export class ManageClassesComponent implements OnInit {
       this.classes[index] = {
         ...this.editingClass,
         className: this.newClassName.trim(),
-        classNumber: this.newClassNumber!,
-        section: this.newSection
+        classNumber: this.newClassNumber!
       };
       this.classesService.setClasses(this.classes);
       this.filterClasses();
@@ -157,16 +152,15 @@ export class ManageClassesComponent implements OnInit {
     this.filterClasses();
   }
 
-  // Filter classes based on search and class number/section
+  // Filter classes based on search and class number
   filterClasses(): void {
     this.filteredClasses = this.classes.filter(c => {
       const matchesSearch = !this.searchTerm || 
         c.className.toLowerCase().includes(this.searchTerm.toLowerCase());
       
       const matchesClass = !this.selectedClass || c.classNumber.toString() === this.selectedClass;
-      const matchesSection = !this.selectedSection || c.section === this.selectedSection;
       
-      return matchesSearch && matchesClass && matchesSection;
+      return matchesSearch && matchesClass;
     });
     this.dataSource = new MatTableDataSource(this.filteredClasses);
   }
@@ -175,7 +169,6 @@ export class ManageClassesComponent implements OnInit {
   resetForm(): void {
     this.newClassName = '';
     this.newClassNumber = null;
-    this.newSection = '';
     this.editingClass = null;
   }
 

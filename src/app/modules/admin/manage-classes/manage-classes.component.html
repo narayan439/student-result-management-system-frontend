@@ -59,16 +59,6 @@
           </mat-select>
           <mat-icon matPrefix>school</mat-icon>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Section (A-E)</mat-label>
-          <mat-select [(ngModel)]="newSection" (selectionChange)="updateClassName()" name="section">
-            <mat-option *ngFor="let sec of sections" [value]="sec">
-              Section {{ sec }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matPrefix>apps</mat-icon>
-        </mat-form-field>
       </div>
 
       <div class="form-actions">
@@ -120,16 +110,6 @@
           </mat-select>
           <mat-icon matPrefix>school</mat-icon>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Section (A-E)</mat-label>
-          <mat-select [(ngModel)]="newSection" (selectionChange)="updateClassName()" name="section">
-            <mat-option *ngFor="let sec of sections" [value]="sec">
-              Section {{ sec }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matPrefix>apps</mat-icon>
-        </mat-form-field>
       </div>
 
       <div class="form-actions">
@@ -172,17 +152,6 @@
             <mat-option value="">All Classes</mat-option>
             <mat-option *ngFor="let classNum of classNumbers" [value]="classNum.toString()">
               Class {{ classNum }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matPrefix>filter_list</mat-icon>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="filter-field">
-          <mat-label>Filter by Section</mat-label>
-          <mat-select [(ngModel)]="selectedSection" (selectionChange)="filterClasses()" name="filterSection">
-            <mat-option value="">All Sections</mat-option>
-            <mat-option *ngFor="let sec of sections" [value]="sec">
-              Section {{ sec }}
             </mat-option>
           </mat-select>
           <mat-icon matPrefix>filter_list</mat-icon>
@@ -236,11 +205,11 @@
           </td>
         </ng-container>
 
-        <!-- Section Column -->
-        <ng-container matColumnDef="section">
-          <th mat-header-cell *matHeaderCellDef> Section </th>
+        <!-- Student Count Column -->
+        <ng-container matColumnDef="studentCount">
+          <th mat-header-cell *matHeaderCellDef> Students </th>
           <td mat-cell *matCellDef="let schoolClass">
-            <mat-chip class="section-chip">{{ schoolClass.section }}</mat-chip>
+            <mat-chip class="student-chip">{{ schoolClass.studentCount }} / {{ schoolClass.maxCapacity }}</mat-chip>
           </td>
         </ng-container>
 
@@ -323,7 +292,7 @@
                 <h3 class="class-name">{{ schoolClass.className }}</h3>
                 <p class="class-meta">
                   <mat-chip class="class-chip">Class {{ schoolClass.classNumber }}</mat-chip>
-                  <mat-chip class="section-chip">Section {{ schoolClass.section }}</mat-chip>
+                  <mat-chip class="student-chip">{{ schoolClass.studentCount }} / {{ schoolClass.maxCapacity }}</mat-chip>
                 </p>
               </div>
             </div>

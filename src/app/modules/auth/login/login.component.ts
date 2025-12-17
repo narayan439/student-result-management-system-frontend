@@ -45,17 +45,23 @@ export class LoginComponent {
     setTimeout(() => {
       const role = this.auth.fakeLogin(this.loginData.email, this.loginData.password);
 
-      if (role === 'ADMIN') {
-        this.router.navigate(['/admin']);
-      }
-      else if (role === 'TEACHER') {
-        this.router.navigate(['/teacher']);
-      }
-      else if (role === 'STUDENT') {
-        this.router.navigate(['/student']);
+      if (role) {
+        // Save user session
+        this.auth.saveUserSession(this.loginData.email, role);
+        
+        // Navigate based on role
+        if (role === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        }
+        else if (role === 'TEACHER') {
+          this.router.navigate(['/teacher']);
+        }
+        else if (role === 'STUDENT') {
+          this.router.navigate(['/student']);
+        }
       }
       else {
-        alert("❌ Invalid credentials");
+        alert("❌ Invalid email or password");
       }
       
       this.isLoading = false;
