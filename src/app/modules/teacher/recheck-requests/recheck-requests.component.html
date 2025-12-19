@@ -69,7 +69,7 @@
       </div>
     </div>
 
-    <!-- Table Container with Horizontal Scroll on Small Screens -->
+    <!-- Table Container -->
     <div class="table-container">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
         
@@ -162,7 +162,7 @@
           </th>
           <td mat-cell *matCellDef="let r">
             <div class="date-cell">
-              {{ r.requestDate | date:'short' }}
+              {{ r.requestDate | date:'mediumDate' }}
             </div>
           </td>
         </ng-container>
@@ -213,22 +213,19 @@
         <!-- Data Rows -->
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-        <!-- Empty State -->
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="6">
-            <div class="empty-state">
-              <mat-icon class="empty-icon">inbox</mat-icon>
-              <h3>No Recheck Requests</h3>
-              <p>All requests have been processed</p>
-            </div>
-          </td>
-        </tr>
-
       </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!dataSource || dataSource.data.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">inbox</mat-icon>
+      <h3>No Recheck Requests</h3>
+      <p>All requests have been processed</p>
     </div>
 
     <!-- Paginator -->
     <mat-paginator 
+      *ngIf="dataSource && dataSource.data.length > 0"
       [pageSizeOptions]="[5, 10, 20, 50]" 
       [pageSize]="pageSize"
       showFirstLastButtons

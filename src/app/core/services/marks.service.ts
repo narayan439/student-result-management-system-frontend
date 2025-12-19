@@ -119,7 +119,87 @@ export class MarksService {
     { marksId: 'M48', studentId: '10', subject: 'English', marksObtained: 84, maxMarks: 100, term: 'Term 1', year: 2024 },
     { marksId: 'M49', studentId: '10', subject: 'MIL Odia', marksObtained: 86, maxMarks: 100, term: 'Term 1', year: 2024 },
     { marksId: 'M50', studentId: '10', subject: 'Music', marksObtained: 88, maxMarks: 100, term: 'Term 1', year: 2024 },
-    { marksId: 'M50b', studentId: '10', subject: 'Drawing', marksObtained: 90, maxMarks: 100, term: 'Term 1', year: 2024 }
+    { marksId: 'M50b', studentId: '10', subject: 'Drawing', marksObtained: 90, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 11 - Class 3 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M51', studentId: '11', subject: 'Mathematics', marksObtained: 81, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M52', studentId: '11', subject: 'Science', marksObtained: 83, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M53', studentId: '11', subject: 'English', marksObtained: 79, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M54', studentId: '11', subject: 'MIL Odia', marksObtained: 82, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M55', studentId: '11', subject: 'History', marksObtained: 80, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M56', studentId: '11', subject: 'Geography', marksObtained: 84, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 12 - Class 3 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M57', studentId: '12', subject: 'Mathematics', marksObtained: 76, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M58', studentId: '12', subject: 'Science', marksObtained: 78, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M59', studentId: '12', subject: 'English', marksObtained: 74, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M60', studentId: '12', subject: 'MIL Odia', marksObtained: 77, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M61', studentId: '12', subject: 'History', marksObtained: 75, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M62', studentId: '12', subject: 'Geography', marksObtained: 79, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 13 - Class 3 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M63', studentId: '13', subject: 'Mathematics', marksObtained: 89, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M64', studentId: '13', subject: 'Science', marksObtained: 91, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M65', studentId: '13', subject: 'English', marksObtained: 87, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M66', studentId: '13', subject: 'MIL Odia', marksObtained: 88, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M67', studentId: '13', subject: 'History', marksObtained: 90, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M68', studentId: '13', subject: 'Geography', marksObtained: 89, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 14 - Class 3 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M69', studentId: '14', subject: 'Mathematics', marksObtained: 82, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M70', studentId: '14', subject: 'Science', marksObtained: 84, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M71', studentId: '14', subject: 'English', marksObtained: 80, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M72', studentId: '14', subject: 'MIL Odia', marksObtained: 83, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M73', studentId: '14', subject: 'History', marksObtained: 81, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M74', studentId: '14', subject: 'Geography', marksObtained: 85, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 15 - Class 3 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M75', studentId: '15', subject: 'Mathematics', marksObtained: 77, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M76', studentId: '15', subject: 'Science', marksObtained: 79, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M77', studentId: '15', subject: 'English', marksObtained: 75, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M78', studentId: '15', subject: 'MIL Odia', marksObtained: 78, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M79', studentId: '15', subject: 'History', marksObtained: 76, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M80', studentId: '15', subject: 'Geography', marksObtained: 80, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 16 - Class 4 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M81', studentId: '16', subject: 'Mathematics', marksObtained: 85, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M82', studentId: '16', subject: 'Science', marksObtained: 87, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M83', studentId: '16', subject: 'English', marksObtained: 83, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M84', studentId: '16', subject: 'MIL Odia', marksObtained: 84, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M85', studentId: '16', subject: 'History', marksObtained: 86, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M86', studentId: '16', subject: 'Geography', marksObtained: 88, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 17 - Class 4 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M87', studentId: '17', subject: 'Mathematics', marksObtained: 73, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M88', studentId: '17', subject: 'Science', marksObtained: 75, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M89', studentId: '17', subject: 'English', marksObtained: 71, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M90', studentId: '17', subject: 'MIL Odia', marksObtained: 74, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M91', studentId: '17', subject: 'History', marksObtained: 72, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M92', studentId: '17', subject: 'Geography', marksObtained: 76, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 18 - Class 4 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M93', studentId: '18', subject: 'Mathematics', marksObtained: 88, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M94', studentId: '18', subject: 'Science', marksObtained: 90, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M95', studentId: '18', subject: 'English', marksObtained: 85, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M96', studentId: '18', subject: 'MIL Odia', marksObtained: 87, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M97', studentId: '18', subject: 'History', marksObtained: 89, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M98', studentId: '18', subject: 'Geography', marksObtained: 91, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 19 - Class 4 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M99', studentId: '19', subject: 'Mathematics', marksObtained: 80, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M100', studentId: '19', subject: 'Science', marksObtained: 82, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M101', studentId: '19', subject: 'English', marksObtained: 78, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M102', studentId: '19', subject: 'MIL Odia', marksObtained: 81, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M103', studentId: '19', subject: 'History', marksObtained: 79, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M104', studentId: '19', subject: 'Geography', marksObtained: 83, maxMarks: 100, term: 'Term 1', year: 2024 },
+    
+    // Student 20 - Class 4 (Math, Science, English, MIL Odia, History, Geography)
+    { marksId: 'M105', studentId: '20', subject: 'Mathematics', marksObtained: 91, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M106', studentId: '20', subject: 'Science', marksObtained: 93, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M107', studentId: '20', subject: 'English', marksObtained: 89, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M108', studentId: '20', subject: 'MIL Odia', marksObtained: 90, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M109', studentId: '20', subject: 'History', marksObtained: 92, maxMarks: 100, term: 'Term 1', year: 2024 },
+    { marksId: 'M110', studentId: '20', subject: 'Geography', marksObtained: 94, maxMarks: 100, term: 'Term 1', year: 2024 }
   ];
 
   constructor(private http: HttpClient) {

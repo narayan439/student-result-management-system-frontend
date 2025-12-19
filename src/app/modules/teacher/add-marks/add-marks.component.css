@@ -3,19 +3,110 @@
   padding: 24px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-/* Form Card */
+/* Header */
+.marks-header {
+  text-align: center;
+  margin-bottom: 32px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.marks-header h2 {
+  color: #1a237e;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.marks-header p {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Messages */
+.success-message {
+  background: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.success-message mat-icon {
+  color: #4caf50;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.success-message strong {
+  color: #2e7d32;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.success-message p {
+  color: #388e3c;
+  margin: 0;
+  font-size: 14px;
+}
+
+.error-message {
+  background: #ffebee;
+  border-left: 4px solid #f44336;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error-message mat-icon {
+  color: #f44336;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.error-message strong {
+  color: #d32f2f;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.error-message p {
+  color: #d32f2f;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Marks Card */
 .marks-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: white !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden;
-  width: 100%;
-  max-width: 500px;
+  max-width: 800px;
+  margin: 0 auto !important;
 }
 
 /* Card Header */
@@ -24,7 +115,6 @@
   color: white;
   padding: 32px;
   text-align: center;
-  position: relative;
 }
 
 .header-icon {
@@ -61,6 +151,127 @@
   padding: 32px;
 }
 
+/* Search Section */
+.search-section h3 {
+  color: #1a237e;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-section h3 mat-icon {
+  color: #304ffe;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.search-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.search-field {
+  flex: 1;
+}
+
+.search-btn {
+  height: 56px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Student Details */
+.student-details {
+  margin-top: 24px;
+  padding: 24px;
+  background: #f7fafc;
+  border-radius: 12px;
+  border-left: 4px solid #304ffe;
+}
+
+.student-details h3 {
+  color: #1a237e;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.student-details h3 mat-icon {
+  color: #304ffe;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-label mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: #a0aec0;
+}
+
+.detail-value {
+  font-size: 15px;
+  color: #2d3748;
+  font-weight: 500;
+  padding: 4px 0;
+}
+
+/* Marks Form Section */
+.marks-form-section {
+  margin-top: 32px;
+}
+
+.marks-form-section h3 {
+  color: #1a237e;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.marks-form-section h3 mat-icon {
+  color: #304ffe;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
 /* Form Styles */
 form {
   display: flex;
@@ -68,7 +279,12 @@ form {
   gap: 24px;
 }
 
-/* Form Fields */
+/* Full Width Fields */
+.full-width {
+  width: 100%;
+}
+
+/* Custom Form Field Styles */
 ::ng-deep .mat-form-field-outline {
   background: #f8fafc;
   border-radius: 8px !important;
@@ -90,53 +306,171 @@ form {
   color: #1a237e !important;
 }
 
-/* Field Icons */
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-prefix {
   color: #a0aec0;
   margin-right: 8px;
 }
 
-/* Full Width Fields */
-.full-width {
-  width: 100%;
+/* Subjects Grid */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
 }
 
-/* Custom Select Styling */
-::ng-deep .mat-select-panel {
-  border-radius: 8px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+.subject-marks-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-::ng-deep .mat-option {
-  height: 48px !important;
-  display: flex !important;
-  align-items: center !important;
-}
-
-/* Submit Button */
-button[mat-raised-button] {
-  height: 56px;
+/* Submitted Marks Summary */
+.submitted-summary {
+  padding: 20px;
+  background: #f0f9ff;
   border-radius: 8px;
-  font-weight: 600;
+  border-left: 4px solid #2196f3;
+}
+
+.submitted-summary h4 {
+  color: #1a237e;
+  margin: 0 0 12px 0;
   font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submitted-summary h4 mat-icon {
+  color: #2196f3;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.submitted-summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.submitted-summary li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.subject-name {
+  color: #2d3748;
+  font-weight: 500;
+  flex: 1;
+}
+
+.status-success {
+  color: #4caf50;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-failed {
+  color: #f44336;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-success mat-icon,
+.status-failed mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.button-group button {
+  flex: 1;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.submit-btn {
   background: linear-gradient(135deg, #1a237e, #304ffe);
   color: white;
   box-shadow: 0 4px 12px rgba(26, 35, 126, 0.2);
   transition: all 0.3s ease;
-  margin-top: 8px;
 }
 
-button[mat-raised-button]:hover {
+.submit-btn:hover:not([disabled]) {
+  background: linear-gradient(135deg, #283593, #1a237e);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(26, 35, 126, 0.3);
 }
 
-button[mat-raised-button]:disabled {
-  background: #cbd5e0;
-  color: #718096;
+.reset-btn {
+  border: 2px solid #cbd5e0;
+  color: #4a5568;
+}
+
+.reset-btn:hover:not([disabled]) {
+  background: #f7fafc;
+  border-color: #a0aec0;
+}
+
+button[disabled] {
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+}
+
+/* Empty State */
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #718096;
+}
+
+.empty-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #cbd5e0;
+  margin: 0 auto 16px;
+}
+
+.empty-state h4 {
+  color: #4a5568;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 /* Info Section */
@@ -152,7 +486,7 @@ button[mat-raised-button]:disabled {
   color: #2d3748;
   font-size: 16px;
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -172,102 +506,14 @@ button[mat-raised-button]:disabled {
   line-height: 1.5;
 }
 
-/* Subjects Grid */
-.subjects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin: 24px 0;
-}
-
-.subject-marks-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Submitted Marks Summary */
-.submitted-summary {
-  margin: 24px 0;
-  padding: 16px;
-  background: #f0f9ff;
-  border-radius: 8px;
-  border-left: 4px solid #2196f3;
-}
-
-.submitted-summary h4 {
-  color: #1a237e;
-  margin: 0 0 12px 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.submitted-summary ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.submitted-summary li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  background: white;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.subject-name {
-  color: #2d3748;
-  font-weight: 500;
-}
-
-.status-success {
-  color: #4caf50;
-  font-weight: 600;
-}
-
-.status-failed {
-  color: #f44336;
-  font-weight: 600;
-}
-
-/* Button Group */
-.button-group {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.button-group button {
-  flex: 1;
-}
-
-.submit-btn {
-  background: linear-gradient(135deg, #1a237e, #304ffe);
-}
-
-.reset-btn {
-  border: 2px solid #cbd5e0;
-  color: #4a5568;
-}
-
-.reset-btn:hover {
-  background: #f7fafc;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .add-marks-container {
     padding: 16px;
   }
   
-  .marks-card {
-    max-width: 100%;
+  .marks-header h2 {
+    font-size: 28px;
   }
   
   .card-header {
@@ -293,12 +539,37 @@ button[mat-raised-button]:disabled {
     padding: 24px;
   }
   
-  form {
-    gap: 16px;
+  .search-row {
+    flex-direction: column;
+  }
+  
+  .search-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .subjects-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .button-group button {
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
+  .marks-header h2 {
+    font-size: 24px;
+  }
+  
   .card-header {
     padding: 20px;
   }
@@ -307,8 +578,15 @@ button[mat-raised-button]:disabled {
     padding: 20px;
   }
   
-  button[mat-raised-button] {
-    height: 48px;
-    font-size: 15px;
+  .student-details {
+    padding: 16px;
+  }
+  
+  .submitted-summary {
+    padding: 16px;
+  }
+  
+  .info-section {
+    padding: 16px;
   }
 }

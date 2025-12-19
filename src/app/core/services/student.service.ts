@@ -17,58 +17,35 @@ export class StudentService {
   private sampleStudents: Student[] = this.generateSampleStudents();
 
   private generateSampleStudents(): Student[] {
-    const firstNames = [
-      'Arjun', 'Priya', 'Rahul', 'Anjali', 'Vikram', 'Sneha', 'Aditya', 'Neha', 'Rohan', 'Divya',
-      'Akshay', 'Pooja', 'Nikhil', 'Shreya', 'Sanjay', 'Ananya', 'Varun', 'Isha', 'Manish', 'Riya',
-      'Harshit', 'Kavya', 'Aman', 'Navya', 'Shashank', 'Diya', 'Abhishek', 'Sakshi', 'Karan', 'Veda'
-    ];
-
-    const lastNames = [
-      'Kumar', 'Singh', 'Patel', 'Sharma', 'Verma', 'Gupta', 'Yadav', 'Nair', 'Desai', 'Bhat',
-      'Reddy', 'Rao', 'Chopra', 'Malhotra', 'Kapoor', 'Mishra', 'Agarwal', 'Jain', 'Srivastava', 'Dubey'
-    ];
-
-    const students: Student[] = [];
-    let studentId = 1;
-
-    // 5 students per class, for classes 1-10
-    for (let classNum = 1; classNum <= 10; classNum++) {
-      const className = `Class ${classNum}`;
+    const students: Student[] = [
+      // Class 1 (studentId: 1-5)
+      { studentId: 1, name: 'Arjun Kumar', email: 'arjun.kumar1@gmail.com', className: 'Class 1', rollNo: '1A01', dob: '09/04/2011', phone: '9876540001', isActive: true },
+      { studentId: 2, name: 'Priya Singh', email: 'priya.singh2@gmail.com', className: 'Class 1', rollNo: '1A02', dob: '23/08/2009', phone: '9876540002', isActive: true },
+      { studentId: 3, name: 'Rahul Patel', email: 'rahul.patel3@gmail.com', className: 'Class 1', rollNo: '1A03', dob: '15/11/2010', phone: '9876540003', isActive: true },
+      { studentId: 4, name: 'Anjali Sharma', email: 'anjali.sharma4@gmail.com', className: 'Class 1', rollNo: '1A04', dob: '07/03/2011', phone: '9876540004', isActive: true },
+      { studentId: 5, name: 'Vikram Verma', email: 'vikram.verma5@gmail.com', className: 'Class 1', rollNo: '1A05', dob: '28/06/2010', phone: '9876540005', isActive: true },
       
-      // 5 students per class
-      for (let rollSequence = 1; rollSequence <= 5; rollSequence++) {
-        const firstNameIndex = (studentId - 1) % firstNames.length;
-        const lastNameIndex = (studentId - 1) % lastNames.length;
-        const firstName = firstNames[firstNameIndex];
-        const lastName = lastNames[lastNameIndex];
-        const name = `${firstName} ${lastName}`;
-        const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${studentId}@student.com`;
-        
-        // Roll number format: classNumber + "A" + sequence (e.g., 10A01, 10A06, 10A11)
-        const rollNo = `${classNum}A${String(rollSequence).padStart(2, '0')}`;
-        
-        // Generate random date of birth between 2005-2012
-        const year = 2005 + Math.floor(Math.random() * 8);
-        const month = Math.floor(Math.random() * 12) + 1;
-        const day = Math.floor(Math.random() * 28) + 1;
-        const dob = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
-        const phone = `987654${String(studentId).padStart(4, '0')}`;
-
-        students.push({
-          studentId,
-          name,
-          email,
-          className,
-          rollNo,
-          dob,
-          phone,
-          isActive: true
-        });
-
-        studentId++;
-      }
-    }
+      // Class 2 (studentId: 6-10)
+      { studentId: 6, name: 'Sneha Gupta', email: 'sneha.gupta6@gmail.com', className: 'Class 2', rollNo: '2A01', dob: '19/01/2009', phone: '9876540006', isActive: true },
+      { studentId: 7, name: 'Aditya Yadav', email: 'aditya.yadav7@gmail.com', className: 'Class 2', rollNo: '2A02', dob: '30/09/2010', phone: '9876540007', isActive: true },
+      { studentId: 8, name: 'Neha Nair', email: 'neha.nair8@gmail.com', className: 'Class 2', rollNo: '2A03', dob: '11/04/2011', phone: '9876540008', isActive: true },
+      { studentId: 9, name: 'Rohan Desai', email: 'rohan.desai9@gmail.com', className: 'Class 2', rollNo: '2A04', dob: '25/07/2010', phone: '9876540009', isActive: true },
+      { studentId: 10, name: 'Divya Bhat', email: 'divya.bhat10@gmail.com', className: 'Class 2', rollNo: '2A05', dob: '14/12/2009', phone: '9876540010', isActive: true },
+      
+      // Class 3 (studentId: 11-15)
+      { studentId: 11, name: 'Akshay Reddy', email: 'akshay.reddy11@gmail.com', className: 'Class 3', rollNo: '3A01', dob: '06/02/2008', phone: '9876540011', isActive: true },
+      { studentId: 12, name: 'Pooja Rao', email: 'pooja.rao12@gmail.com', className: 'Class 3', rollNo: '3A02', dob: '17/05/2009', phone: '9876540012', isActive: true },
+      { studentId: 13, name: 'Nikhil Chopra', email: 'nikhil.chopra13@gmail.com', className: 'Class 3', rollNo: '3A03', dob: '29/08/2008', phone: '9876540013', isActive: true },
+      { studentId: 14, name: 'Shreya Malhotra', email: 'shreya.malhotra14@gmail.com', className: 'Class 3', rollNo: '3A04', dob: '10/10/2009', phone: '9876540014', isActive: true },
+      { studentId: 15, name: 'Sanjay Kapoor', email: 'sanjay.kapoor15@gmail.com', className: 'Class 3', rollNo: '3A05', dob: '21/03/2008', phone: '9876540015', isActive: true },
+      
+      // Class 4 (studentId: 16-20)
+      { studentId: 16, name: 'Ananya Mishra', email: 'ananya.mishra16@gmail.com', className: 'Class 4', rollNo: '4A01', dob: '08/07/2008', phone: '9876540016', isActive: true },
+      { studentId: 17, name: 'Varun Agarwal', email: 'varun.agarwal17@gmail.com', className: 'Class 4', rollNo: '4A02', dob: '22/11/2007', phone: '9876540017', isActive: true },
+      { studentId: 18, name: 'Isha Jain', email: 'isha.jain18@gmail.com', className: 'Class 4', rollNo: '4A03', dob: '13/04/2008', phone: '9876540018', isActive: true },
+      { studentId: 19, name: 'Manish Srivastava', email: 'manish.srivastava19@gmail.com', className: 'Class 4', rollNo: '4A04', dob: '26/09/2007', phone: '9876540019', isActive: true },
+      { studentId: 20, name: 'Riya Dubey', email: 'riya.dubey20@gmail.com', className: 'Class 4', rollNo: '4A05', dob: '05/06/2008', phone: '9876540020', isActive: true }
+    ];
 
     return students;
   }

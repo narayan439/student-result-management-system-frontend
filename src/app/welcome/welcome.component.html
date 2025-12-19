@@ -1,11 +1,12 @@
-<div class="hero-section">
-  <div class="content">
+<div class="welcome-container">
+  <!-- Main Card -->
+  <mat-card class="welcome-card">
     
-    <!-- Header -->
-    <div class="header">
-      <div class="logo">
-        <i class="fas fa-graduation-cap"></i>
-        <h1 class="school-name"> PUBLIC SCHOOL</h1>
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="logo-container">
+        <mat-icon class="logo-icon">school</mat-icon>
+        <h1 class="school-name">Sri Jayadev Shiksha Kendra</h1>
       </div>
       <p class="tagline">Student Result Portal 2023-24</p>
     </div>
@@ -13,59 +14,101 @@
     <!-- Form Section -->
     <div class="form-section">
       <h2 class="form-title">
-        <i class="fas fa-search"></i> Check Your Result
+        <mat-icon>search</mat-icon> Check Your Result
       </h2>
-      
-      <div class="input-group">
-        <label for="rollNo">Roll Number</label>
+
+      <!-- Error Messages -->
+      <div *ngIf="rollNoError" class="error-message">
+        <mat-icon>error</mat-icon>
+        {{ rollNoError }}
+      </div>
+
+      <div *ngIf="dobError" class="error-message">
+        <mat-icon>error</mat-icon>
+        {{ dobError }}
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="foundStudent" class="success-message">
+        <mat-icon>check_circle</mat-icon>
+        Student found: {{ foundStudent.name }}
+      </div>
+
+      <!-- Roll Number Input -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Roll Number</mat-label>
         <input 
-          type="text" 
-          id="rollNo" 
+          matInput 
           [(ngModel)]="rollNo" 
-          placeholder="Enter your roll number"
+          placeholder="e.g., 1A01, 2A05"
           maxlength="10"
+          [disabled]="isSearching"
         >
-      </div>
+        <mat-icon matPrefix>badge</mat-icon>
+        <mat-hint>Enter your class and roll number</mat-hint>
+      </mat-form-field>
 
-      <div class="input-group">
-        <label for="dob">Date of Birth</label>
+      <!-- Date of Birth Input -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Date of Birth</mat-label>
         <input 
-          type="date" 
-          id="dob" 
+          matInput 
+          type="date"
           [(ngModel)]="dob" 
-          placeholder="Select your date of birth"
+          [disabled]="isSearching"
         >
-      </div>
+        <mat-icon matPrefix>calendar_today</mat-icon>
+        <mat-hint>Select your date of birth (DD-MM-YYYY)</mat-hint>
+      </mat-form-field>
 
-      <button class="view-btn" (click)="viewResult()">
-        <i class="fas fa-file-alt"></i> View Result
+      <!-- View Result Button -->
+      <button 
+        mat-raised-button 
+        color="primary" 
+        class="view-btn"
+        (click)="viewResult()" 
+        [disabled]="isSearching || !rollNo || !dob"
+      >
+        <mat-icon>description</mat-icon>
+        {{ isSearching ? 'Searching...' : 'View Result' }}
       </button>
+
     </div>
 
     <!-- Info Section -->
     <div class="info-section">
-      <p>
-        <i class="fas fa-info-circle"></i>
-        Please enter your correct roll number and date of birth
-      </p>
-      <p>
-        <i class="fas fa-exclamation-triangle"></i>
-        For any discrepancies, contact the examination office
-      </p>
+      <mat-card class="info-card">
+        <mat-card-content>
+          <div class="info-item">
+            <mat-icon>info</mat-icon>
+            <span>Please enter your correct roll number and date of birth</span>
+          </div>
+          <div class="info-item">
+            <mat-icon>warning</mat-icon>
+            <span>Demo check ROLL NO- (1A01) &nbsp; DOB -(09-04-2011)</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
 
     <!-- Login Section -->
     <div class="login-section">
-      <button class="login-btn" routerLink="/login">
-        <i class="fas fa-sign-in-alt"></i>Login
+      <button 
+        mat-raised-button 
+        color="accent" 
+        class="login-btn"
+        routerLink="/login"
+      >
+        <mat-icon>login</mat-icon>
+        Login
       </button>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-      <p>© 2023 Narayan Public School. All rights reserved.</p>
+      <p>© 2023 Sri Jayadev Shiksha Kendra. All rights reserved.</p>
       <p>Contact: exam@dps.edu.in | Phone: 011-2653-XXXX</p>
     </div>
 
-  </div>
+  </mat-card>
 </div>

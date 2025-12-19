@@ -178,6 +178,8 @@ export class RecheckRequestsComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  
+
   /**
    * Change page size
    */
