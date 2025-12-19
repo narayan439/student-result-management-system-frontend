@@ -30,9 +30,6 @@ export class AddMarksComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  /**
-   * Search student by roll number
-   */
   searchStudent(): void {
     if (!this.rollNo.trim()) {
       this.submitError = 'Please enter a roll number';
@@ -70,9 +67,6 @@ export class AddMarksComponent implements OnInit {
     console.log(`✓ Loaded ${this.subjects.length} subjects for Class ${this.studentClassNumber}`);
   }
 
-  /**
-   * Reset form
-   */
   resetForm(): void {
     this.rollNo = '';
     this.student = null;
@@ -83,9 +77,6 @@ export class AddMarksComponent implements OnInit {
     this.submittedMarks = [];
   }
 
-  /**
-   * Submit all marks at once
-   */
   submitAllMarks(): void {
     if (!this.student) {
       this.submitError = 'Please search for a student first';

@@ -16,7 +16,7 @@
       <div class="profile-avatar">
         <mat-icon class="avatar-icon">school</mat-icon>
       </div>
-      <h3 class="profile-name">{{ student?.name }}</h3>
+      <h3 class="profile-name">{{ student?.name || 'Loading...' }}</h3>
       <p class="profile-class">Class {{ student?.className }}</p>
     </div>
 
@@ -31,7 +31,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Full Name</span>
-            <p class="info-value">{{ student?.name }}</p>
+            <p class="info-value">{{ student?.name || '-' }}</p>
           </div>
         </div>
 
@@ -42,7 +42,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Email Address</span>
-            <p class="info-value">{{ student?.email }}</p>
+            <p class="info-value">{{ student?.email || '-' }}</p>
           </div>
         </div>
 
@@ -53,7 +53,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Roll Number</span>
-            <p class="info-value">{{ student?.rollNo }}</p>
+            <p class="info-value">{{ student?.rollNo || '-' }}</p>
           </div>
         </div>
 
@@ -64,7 +64,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Class</span>
-            <p class="info-value">{{ student?.className }}</p>
+            <p class="info-value">{{ student?.className || '-' }}</p>
           </div>
         </div>
 
@@ -75,7 +75,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Date of Birth</span>
-            <p class="info-value">{{ student?.dob }}</p>
+            <p class="info-value">{{ student?.dob || '-' }}</p>
           </div>
         </div>
 
@@ -86,7 +86,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Phone Number</span>
-            <p class="info-value">{{ student?.phone }}</p>
+            <p class="info-value">{{ student?.phone || 'Not provided' }}</p>
           </div>
         </div>
 
@@ -97,9 +97,12 @@
           </div>
           <div class="info-content">
             <span class="info-label">Student ID</span>
-            <p class="info-value">{{ student?.studentId }}</p>
+            <p class="info-value">{{ student?.studentId || student?.rollNo || '-' }}</p>
           </div>
         </div>
+
+        <!-- Address (Optional) -->
+        
 
       </div>
     </div>

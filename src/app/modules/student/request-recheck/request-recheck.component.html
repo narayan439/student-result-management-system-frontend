@@ -27,6 +27,14 @@
   <!-- Recheck Card -->
   <mat-card class="recheck-card">
     
+    <!-- Recheck Header Section -->
+    <div class="recheck-header-section">
+      <h3>
+        <mat-icon class="header-icon">redo</mat-icon> Submit Recheck Request
+      </h3>
+      <p>Fill out the form below to request re-evaluation of your marks</p>
+    </div>
+
     <!-- Student Info Section -->
     <div class="student-info-section">
       <div class="info-item">
@@ -43,7 +51,7 @@
       </div>
     </div>
 
-    <!-- Form Section -->
+    <!-- Recheck Content -->
     <div class="recheck-content">
       
       <!-- Form -->
@@ -97,7 +105,7 @@
             <textarea 
               matInput 
               id="reason"
-              rows="5"
+              rows="4"
               [(ngModel)]="recheck.reason"
               name="reason"
               required
@@ -122,7 +130,7 @@
             color="primary" 
             type="submit" 
             class="submit-btn"
-            [disabled]="reForm.invalid || isSubmitting"
+            [disabled]="reForm.invalid || isSubmitting || !canRequest"
           >
             <mat-icon>{{ isSubmitting ? 'hourglass_empty' : 'send' }}</mat-icon>
             {{ isSubmitting ? 'Submitting...' : 'Submit Recheck Request' }}
@@ -142,6 +150,11 @@
       </form>
     </div>
 
+  </mat-card>
+
+  <!-- Bottom Sections Card -->
+  <mat-card class="bottom-sections-card">
+    
     <!-- Important Notes -->
     <div class="notes-section">
       <h4>
@@ -179,6 +192,46 @@
       </div>
     </div>
 
+    <!-- Recent Requests Status -->
+    <div *ngIf="statusSummary.total > 0" class="status-section">
+      <h4>
+        <mat-icon>history</mat-icon> Recent Request Status
+      </h4>
+      <div class="status-item">
+        <span class="status-label">
+          <mat-icon class="status-icon">description</mat-icon>
+          Pending Requests
+        </span>
+        <span class="status-value pending">
+          <mat-icon>pending</mat-icon> {{ statusSummary.pending }}
+        </span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">
+          <mat-icon class="status-icon">check_circle</mat-icon>
+          Completed
+        </span>
+        <span class="status-value completed">
+          <mat-icon>check_circle</mat-icon> {{ statusSummary.completed }}
+        </span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">
+          <mat-icon class="status-icon">error</mat-icon>
+          Rejected
+        </span>
+        <span class="status-value rejected">
+          <mat-icon>cancel</mat-icon> {{ statusSummary.rejected }}
+        </span>
+      </div>
+    </div>
+
   </mat-card>
+
+  <!-- Footer -->
+  <div class="recheck-footer">
+    <p>© 2024 Delhi Public School. All rights reserved.</p>
+    <p>Recheck requests are processed by the Examination Department</p>
+  </div>
 
 </div>

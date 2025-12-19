@@ -29,30 +29,46 @@ export class ViewResultComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Get parameters from route (rollNo and email)
     let rollNo = this.route.snapshot.paramMap.get('rollNo');
     let studentEmail = this.route.snapshot.paramMap.get('email');
 
-    // Try to find student by roll no or email
+    // Get all students
     const students = this.studentService.getAllStudentsSync();
     
-    if (studentEmail) {
-      this.student = students.find(s => s.email === studentEmail);
-    } else if (rollNo) {
-      this.student = students.find(s => s.rollNo === rollNo);
+    if (!students || students.length === 0) {
+      console.error('No students found in StudentService');
+      return;
     }
 
+    // Search for student by email first (most reliable)
+    if (studentEmail) {
+      this.student = students.find(s => s.email === studentEmail);
+      console.log('Searching by email:', studentEmail, 'Found:', this.student);
+    }
+    
+    // If not found by email, search by roll number
+    if (!this.student && rollNo) {
+      this.student = students.find(s => s.rollNo === rollNo);
+      console.log('Searching by rollNo:', rollNo, 'Found:', this.student);
+    }
+
+    // Fallback: use first student (shouldn't happen in normal flow)
     if (!this.student && students.length > 0) {
-      // Default to first student if not found
+      console.warn('Student not found, defaulting to first student');
       this.student = students[0];
     }
 
     if (this.student) {
+      console.log('✓ Student loaded:', this.student);
+      
       // Extract class number
       const classMatch = this.student.className.match(/Class\s(\d+)/);
       this.classNumber = classMatch ? parseInt(classMatch[1]) : 1;
 
       // Load class-specific subjects
       this.classSubjects = this.subjectService.getSubjectsByClass(this.classNumber);
+      console.log(`✓ Loaded ${this.classSubjects.length} subjects for Class ${this.classNumber}`);
 
       // Load marks for this student
       this.marksService.getAllMarks().subscribe({
@@ -60,15 +76,19 @@ export class ViewResultComponent implements OnInit {
           const marksArray = Array.isArray(allMarks) ? allMarks : [];
           const studentIdStr = String(this.student.studentId);
           this.marks = marksArray.filter(m => m.studentId === studentIdStr) || [];
+          console.log(`✓ Loaded ${this.marks.length} marks for student`);
           this.processResult();
         },
-        error: () => {
-          console.warn('Error loading marks');
+        error: (err) => {
+          console.error('Error loading marks:', err);
           this.processResult();
         }
       });
 
+      // Generate QR data
       this.qrData = `ROLL:${this.student.rollNo},EMAIL:${this.student.email},CLASS:${this.student.className}`;
+    } else {
+      console.error('✗ No student found to display result');
     }
   }
 

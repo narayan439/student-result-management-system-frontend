@@ -27,14 +27,85 @@
   margin: 0 auto;
 }
 
+/* Success & Error Messages */
+.success-message {
+  background: #e8f5e9;
+  border: 2px solid #4caf50;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  color: #2e7d32;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.success-message mat-icon {
+  color: #4caf50;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.success-message strong {
+  font-size: 18px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.success-message p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.error-message {
+  background: #ffebee;
+  border: 2px solid #f44336;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  color: #c62828;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error-message mat-icon {
+  color: #f44336;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.error-message strong {
+  font-size: 18px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.error-message p {
+  margin: 0;
+  font-size: 14px;
+}
+
 /* Recheck Card */
 .recheck-card {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  background: white !important;
+  border-radius: 15px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 auto 25px !important;
 }
 
 /* Recheck Header Section */
@@ -66,30 +137,39 @@
   margin: 0;
 }
 
-/* Recheck Content with Scrollbar */
+/* Student Info Section */
+.student-info-section {
+  background: #f8f9fa;
+  padding: 20px 30px;
+  border-bottom: 1px solid #e8eaf6;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-item strong {
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-item span {
+  color: #1a237e;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Recheck Content */
 .recheck-content {
   padding: 40px;
-  overflow-y: auto;
-  max-height: 600px;
-}
-
-/* Custom Scrollbar for recheck-content */
-.recheck-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.recheck-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.recheck-content::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-.recheck-content::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
 }
 
 /* Form Container */
@@ -158,9 +238,59 @@
   height: 20px;
 }
 
+.marks-hint {
+  color: #666;
+  font-size: 13px;
+  margin-left: auto;
+  padding-left: 10px;
+}
+
+/* Marks Display */
+.marks-display {
+  margin-bottom: 25px;
+}
+
+.mark-card {
+  background: #e3f2fd;
+  border: 2px solid #1a237e;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.mark-card mat-icon {
+  color: #1a237e;
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.mark-label {
+  color: #666;
+  font-size: 14px;
+  margin: 0 0 5px 0;
+  font-weight: 500;
+}
+
+.mark-value {
+  color: #1a237e;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
 /* Submit Button */
 .submit-btn {
-  width: 100%;
+  flex: 1;
   height: 56px;
   background: linear-gradient(135deg, #1a237e, #304ffe);
   color: white;
@@ -169,7 +299,6 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 20px;
   letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(48, 79, 254, 0.3);
   display: flex;
@@ -191,20 +320,57 @@
 .submit-btn[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Reset Button */
+.reset-btn {
+  flex: 0 0 auto;
+  height: 56px;
+  padding: 0 25px;
+  border-radius: 10px;
+  border: 2px solid #cbd5e0;
+  background: white;
+  color: #4a5568;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.reset-btn:hover:not([disabled]) {
+  background: #f7fafc;
+  border-color: #a0aec0;
+}
+
+.reset-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Bottom Sections Card */
+.bottom-sections-card {
+  background: white !important;
+  border-radius: 15px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden;
+  max-width: 800px;
+  margin: 0 auto !important;
+  padding: 30px !important;
 }
 
 /* Important Notes */
 .notes-section {
-  margin-top: 40px;
-  padding: 25px;
-  background: #e8eaf6;
-  border-radius: 10px;
-  border-left: 4px solid #304ffe;
+  margin-bottom: 30px;
 }
 
 .notes-section h4 {
   color: #1a237e;
-  margin: 0 0 15px 0;
+  margin: 0 0 20px 0;
   font-size: 18px;
   display: flex;
   align-items: center;
@@ -218,31 +384,43 @@
   height: 24px;
 }
 
-.notes-section ul {
-  margin: 0;
-  padding-left: 20px;
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
 }
 
-.notes-section li {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 10px;
-  line-height: 1.5;
+.note-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.notes-section li strong {
+.note-item mat-icon {
   color: #1a237e;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.note-item strong {
+  color: #1a237e;
+  font-size: 15px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.note-item p {
+  color: #666;
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* Recheck Status */
-.status-section {
-  margin-top: 30px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  border: 1px solid #e0e0e0;
-}
-
 .status-section h4 {
   color: #1a237e;
   margin: 0 0 15px 0;
@@ -302,6 +480,10 @@
   color: #4caf50;
 }
 
+.status-value.rejected {
+  color: #f44336;
+}
+
 .status-value mat-icon {
   font-size: 18px;
   width: 18px;
@@ -332,7 +514,6 @@
   
   .recheck-content {
     padding: 30px 25px;
-    max-height: 500px;
   }
   
   .recheck-header-section {
@@ -343,10 +524,29 @@
     font-size: 22px;
   }
   
+  .student-info-section {
+    padding: 15px 20px;
+    gap: 20px;
+  }
+  
+  .notes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
   .submit-btn {
-    padding: 16px;
-    font-size: 17px;
-    height: 52px;
+    width: 100%;
+  }
+  
+  .reset-btn {
+    width: 100%;
+  }
+  
+  .bottom-sections-card {
+    padding: 25px !important;
   }
 }
 
@@ -365,7 +565,6 @@
   
   .recheck-content {
     padding: 25px 20px;
-    max-height: 450px;
   }
   
   .recheck-header-section h3 {
@@ -376,18 +575,23 @@
     font-size: 15px;
   }
   
-  .notes-section {
-    padding: 20px;
+  .student-info-section {
+    flex-direction: column;
+    gap: 15px;
   }
   
-  .status-section {
-    padding: 16px;
+  .notes-grid {
+    grid-template-columns: 1fr;
   }
   
   .submit-btn {
-    padding: 15px;
     font-size: 16px;
     height: 48px;
+  }
+  
+  .reset-btn {
+    height: 48px;
+    font-size: 15px;
   }
   
   .status-item {

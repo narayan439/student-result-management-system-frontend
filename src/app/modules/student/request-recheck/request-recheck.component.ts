@@ -46,9 +46,6 @@ export class RequestRecheckComponent implements OnInit {
     this.loadStudentAndSubjects();
   }
 
-  /**
-   * Load current student, subjects, and marks
-   */
   loadStudentAndSubjects(): void {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser || currentUser.role !== 'STUDENT') {
@@ -67,11 +64,8 @@ export class RequestRecheckComponent implements OnInit {
       const classMatch = this.student.className.match(/Class\s(\d+)/);
       this.studentClassNumber = classMatch ? parseInt(classMatch[1]) : 0;
       
-      console.log('✓ Student loaded for recheck:', this.student, 'Class:', this.studentClassNumber);
-      
       // Load class-specific subjects
       this.subjects = this.subjectService.getSubjectsByClass(this.studentClassNumber);
-      console.log(`✓ Loaded ${this.subjects.length} subjects for Class ${this.studentClassNumber}:`, this.subjects);
       
       // Load student marks
       this.loadStudentMarks();
@@ -82,16 +76,12 @@ export class RequestRecheckComponent implements OnInit {
       // Load status summary
       this.loadStatusSummary();
     } else {
-      console.error('✗ Student not found for email:', currentUser.email);
       alert('Student profile not found. Please login again.');
       this.router.navigate(['/login']);
       return;
     }
   }
 
-  /**
-   * Load student marks for subject reference
-   */
   loadStudentMarks(): void {
     const studentIdStr = String(this.student?.studentId);
     this.marksService.getAllMarks().subscribe({
@@ -102,7 +92,6 @@ export class RequestRecheckComponent implements OnInit {
           .forEach((m: any) => {
             this.subjectMarks[m.subject] = m.marksObtained || 0;
           });
-        console.log('✓ Student marks loaded:', this.subjectMarks);
       },
       error: (err) => {
         console.error('Error loading marks:', err);
@@ -110,9 +99,6 @@ export class RequestRecheckComponent implements OnInit {
     });
   }
 
-  /**
-   * Check if student can request recheck
-   */
   checkCanRequestRecheck(): void {
     if (this.student?.email) {
       const canReq = this.requestRecheckService.canRequestRecheck(this.student.email);
@@ -125,27 +111,17 @@ export class RequestRecheckComponent implements OnInit {
     }
   }
 
-  /**
-   * Load status summary
-   */
   loadStatusSummary(): void {
     if (this.student?.email) {
       this.statusSummary = this.requestRecheckService.getStatusSummary(this.student.email);
-      console.log('✓ Status summary loaded:', this.statusSummary);
     }
   }
 
-  /**
-   * Update marks when subject changes
-   */
   onSubjectChange(): void {
     const marks = this.subjectMarks[this.recheck.subject] || 0;
     this.recheck.marksObtained = marks;
   }
 
-  /**
-   * Submit recheck request
-   */
   submitRecheck(): void {
     if (!this.canRequest) {
       this.submitError = this.canRequestMessage || 'You cannot request recheck at this time.';
@@ -183,7 +159,6 @@ export class RequestRecheckComponent implements OnInit {
 
     this.requestRecheckService.addRecheck(recheckRequest).subscribe({
       next: (response) => {
-        console.log('✓ Recheck request submitted:', response);
         this.submitSuccess = true;
         this.isSubmitting = false;
         
@@ -208,18 +183,5 @@ export class RequestRecheckComponent implements OnInit {
         this.isSubmitting = false;
       }
     });
-  }
-
-  /**
-   * Get status badge color
-   */
-  getStatusColor(status: string): string {
-    const colors: { [key: string]: string } = {
-      'pending': 'warn',
-      'approved': 'accent',
-      'completed': 'primary',
-      'rejected': 'warn'
-    };
-    return colors[status] || 'primary';
   }
 }
