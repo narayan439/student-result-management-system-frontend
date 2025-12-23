@@ -6,33 +6,29 @@ import { AuthService } from '../services/auth.service';
   providedIn: 'root'
 })
 export class StudentGuard implements CanActivate {
+  constructor(private authService: AuthService, private router: Router) {}
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean {
-    const currentUser = this.authService.getCurrentUser();
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    console.log('🔐 StudentGuard: Checking student authorization...');
     
-    if (!currentUser) {
-      console.warn('❌ StudentGuard: No user logged in - redirecting to login');
-      // Replace history to prevent going back
-      window.history.replaceState(null, '', window.location.href);
-      this.router.navigate(['/login']);
-      return false;
+    // Check if user is logged in and is a student
+    const isAuthenticated = this.authService.isAuthenticated();
+    const userRole = localStorage.getItem('userRole');
+
+    console.log('ℹ Authenticated:', isAuthenticated, 'Role:', userRole);
+
+    if (isAuthenticated && userRole === 'STUDENT') {
+      console.log('✓ StudentGuard: Authorization successful');
+      return true;
     }
 
-    if (currentUser.role !== 'STUDENT') {
-      console.warn(`❌ StudentGuard: User role is ${currentUser.role}, not STUDENT. Access denied.`);
-      this.router.navigate(['/']);
-      return false;
-    }
-
-    console.log(`✅ StudentGuard: User ${currentUser.email} (${currentUser.role}) has access`);
-    return true;
+    console.log('❌ StudentGuard: No user logged in - redirecting to login');
+    this.router.navigate(['/login'], { 
+      queryParams: { 
+        role: 'student',
+        returnUrl: state.url 
+      } 
+    });
+    return false;
   }
 }
