@@ -1,27 +1,126 @@
-# Frontend
+# 🎓 **Frontend – Student Result Management System**
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.11.
+This is the **Frontend application** built using **Angular CLI v15.2.11** and **Angular Material** for modern, fully responsive UI components.
+The system provides a clean interface for students to view results, generate PDFs, scan QR codes for verification, and interact with the application easily.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🎨 **UI Framework Used – Angular Material**
 
-## Code scaffolding
+This project uses **Angular Material** for:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+* Buttons
+* Cards
+* Input fields
+* Dialogs
+* Tables
+* Layout & responsiveness
 
-## Build
+If you are running this project for the first time and Angular Material is not installed, you can install it with:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+ng add @angular/material
+```
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## 🚀 **Development Server**
 
-## Running end-to-end tests
+Start the Angular development server:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+ng serve
+```
 
-## Further help
+Then open:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+http://localhost:4200/
+```
+
+The app reloads automatically on file changes.
+
+---
+
+## 📥 **Install Dependencies (Required for First-Time Setup)**
+
+Before running the project, install all dependencies:
+
+```bash
+npm install
+```
+
+This downloads all node modules listed in `package.json`.
+
+---
+
+## 🛠 **Code Scaffolding**
+
+Generate components and Angular features using:
+
+```bash
+ng generate component component-name
+```
+
+Other generators:
+
+```
+ng generate directive|pipe|service|class|guard|interface|enum|module
+```
+
+---
+
+## 🏗 **Production Build**
+
+To build the project:
+
+```bash
+ng build
+```
+
+The compiled output will be in:
+
+```
+dist/
+```
+
+or for this project:
+
+```
+dist/frontend/
+```
+
+---
+
+## 🧪 **Running Unit Tests**
+
+Run unit tests via **Karma**:
+
+```bash
+ng test
+```
+
+---
+
+## 🔍 **Running End-to-End Tests**
+
+Use:
+
+```bash
+ng e2e
+```
+
+(Requires a testing framework like Cypress or Protractor.)
+
+---
+
+## 📚 **Further Help**
+
+Use:
+
+```bash
+ng help
+```
+
+Or visit:
+👉 [https://angular.io/cli](https://angular.io/cli)
