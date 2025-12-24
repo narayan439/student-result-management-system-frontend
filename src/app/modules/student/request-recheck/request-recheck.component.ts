@@ -39,6 +39,30 @@ export class RequestRecheckComponent implements OnInit {
   
   studentMarksData: { [key: string]: { marksId: number; marksObtained: number } } = {};
 
+  private findMarksEntry(subjectName: string): { marksId: number; marksObtained: number } | null {
+    if (!subjectName || subjectName.trim().length === 0) {
+      return null;
+    }
+
+    // Exact match
+    const direct = this.studentMarksData[subjectName];
+    if (direct) {
+      return direct;
+    }
+
+    const normalized = subjectName.trim().toLowerCase();
+    const keys = Object.keys(this.studentMarksData);
+
+    // Case/whitespace-insensitive match
+    for (const key of keys) {
+      if (key.trim().toLowerCase() === normalized) {
+        return this.studentMarksData[key];
+      }
+    }
+
+    return null;
+  }
+
   constructor(
     private studentService: StudentService,
     private subjectService: SubjectService,
@@ -184,20 +208,19 @@ export class RequestRecheckComponent implements OnInit {
       this.studentClassNumber = classMatch ? parseInt(classMatch[1]) : 0;
       
       console.log('📚 Loading subjects for class:', this.studentClassNumber);
-      
-      // FIRST: Load student marks (this is critical for filtering subjects)
-      console.log('🔄 Step 1: Loading student marks first...');
-      this.loadStudentMarks();
-      
-      // THEN: Load class-specific subjects and filter by marks
-      console.log('🔄 Step 2: Loading subjects for the class...');
-      this.loadSubjectsForClass();
-      
-      // Check if student can request recheck
-      this.checkCanRequestRecheck();
-      
-      // Load status summary
-      this.loadStatusSummary();
+
+      // Ensure pending rechecks are loaded BEFORE filtering subjects,
+      // then load marks, then load subjects (no refresh needed).
+      this.loadExistingRecheckRequests(() => {
+        console.log('🔄 Step 1: Loading student marks...');
+        this.loadStudentMarks();
+
+        console.log('🔄 Step 2: Loading status summary...');
+        this.loadStatusSummary();
+
+        // Check if student can request recheck (cooldown etc.)
+        this.checkCanRequestRecheck();
+      });
     } else {
       alert('Student profile not found. Please login again.');
       this.router.navigate(['/login']);
@@ -237,12 +260,14 @@ export class RequestRecheckComponent implements OnInit {
         console.log('\n🔍 Filtering subjects by marks availability and pending rechecks:');
         const subjectsWithMarks = subjectsArray.filter((subject: any) => {
           const subjectName = subject.subjectName || subject.name || '';
-          const hasMarks = this.subjectMarks[subjectName] !== undefined && this.subjectMarks[subjectName] > 0;
+          const marksEntry = this.findMarksEntry(subjectName);
+          // Treat 0 marks as valid marks (student can still request recheck)
+          const hasMarks = !!marksEntry && marksEntry.marksId > 0;
           const hasPendingRecheck = this.subjectsWithPendingRecheck.has(subjectName);
           
           console.log(`  "${subjectName}": marks=${hasMarks ? '✓' : '✗'}, pending=${hasPendingRecheck ? '⚠️' : '✓'}`);
-          if (hasMarks) {
-            console.log(`      Found in subjectMarks with value: ${this.subjectMarks[subjectName]}`);
+          if (hasMarks && marksEntry) {
+            console.log(`      Found marksId=${marksEntry.marksId}, marksObtained=${marksEntry.marksObtained}`);
           }
           if (hasPendingRecheck) {
             console.log(`      Already has pending recheck - EXCLUDED`);
@@ -297,7 +322,8 @@ export class RequestRecheckComponent implements OnInit {
         // Filter to only show subjects that have marks AND don't have pending rechecks
         const subjectsWithMarks = subjectsArray.filter((subject: any) => {
           const subjectName = subject.subjectName || subject.name || '';
-          const hasMarks = this.subjectMarks[subjectName] !== undefined && this.subjectMarks[subjectName] > 0;
+          const marksEntry = this.findMarksEntry(subjectName);
+          const hasMarks = !!marksEntry && marksEntry.marksId > 0;
           const hasPendingRecheck = this.subjectsWithPendingRecheck.has(subjectName);
           console.log(`  ${subjectName}: marks=${hasMarks ? '✓' : '✗'}, pending=${hasPendingRecheck ? '⚠️' : '✓'}`);
           return hasMarks && !hasPendingRecheck;
@@ -429,23 +455,21 @@ export class RequestRecheckComponent implements OnInit {
       const canReq = this.requestRecheckService.canRequestRecheck(this.student.email);
       this.canRequest = canReq.allowed;
       this.canRequestMessage = canReq.reason || '';
-      
+
       if (!this.canRequest) {
         this.submitError = this.canRequestMessage;
       }
     }
-    
-    // Load existing recheck requests to populate pending subjects
-    this.loadExistingRecheckRequests();
   }
 
   /**
    * Load existing recheck requests from backend
    * Populates subjectsWithPendingRecheck Set to track subjects that already have pending rechecks
    */
-  private loadExistingRecheckRequests(): void {
+  private loadExistingRecheckRequests(afterLoad?: () => void): void {
     if (!this.student || !this.student.studentId) {
       console.warn('⚠️ Student or studentId not available');
+      afterLoad?.();
       return;
     }
 
@@ -485,10 +509,14 @@ export class RequestRecheckComponent implements OnInit {
         
         console.log(`✅ Loaded ${this.subjectsWithPendingRecheck.size} subjects with pending rechecks`);
         console.log(`   Pending subjects:`, Array.from(this.subjectsWithPendingRecheck));
+
+        afterLoad?.();
       },
       error: (err) => {
         console.error('❌ Error loading existing recheck requests:', err);
         // Don't fail silently - log but continue
+
+        afterLoad?.();
       }
     });
   }

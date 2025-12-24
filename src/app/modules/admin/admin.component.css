@@ -538,7 +538,8 @@
   }
   
   .nav-center,
-  .logout {
+  .profile-btn,
+  .logout-btn {
     display: none;
   }
   

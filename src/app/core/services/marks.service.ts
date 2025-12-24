@@ -76,16 +76,11 @@ export class MarksService {
           source: 'backend-cache',
           message: 'Data loaded from backend cache'
         });
-      } else {
-        console.log(`ℹ️  Backend cache loaded but no marks for student ${studentId}`);
-        // Return empty data - NOT an error
-        return of({ 
-          success: true, 
-          data: [], 
-          source: 'backend-cache-empty',
-          message: 'No marks found for this student'
-        });
       }
+
+      // IMPORTANT: Cache may not include newly-added marks for this student.
+      // Don't return early with empty; still try the backend endpoint.
+      console.log(`ℹ️  Cache has marks but none for student ${studentId}; checking backend for fresh data...`);
     }
     
     console.log(`ℹ️  Backend cache not yet loaded`);

@@ -8,9 +8,6 @@ import { ConfigService } from './config.service';
   providedIn: 'root'
 })
 export class AuthService {
-
-  private readonly ADMIN_EMAIL = 'admin@gmail.com';
-  private readonly PASSWORD = '123456';
   private apiAuthUrl: string;
 
   constructor(
@@ -162,12 +159,46 @@ export class AuthService {
     if (!dob) {
       return '';
     }
-    
-    // Remove all non-digit characters
-    const dobDigits = dob.replace(/\D/g, '');
-    
-    // Take first 8 digits (DDMMYYYY or YYYYMMDD)
-    return dobDigits.substring(0, 8);
+
+    const value = String(dob).trim();
+    if (!value) {
+      return '';
+    }
+
+    const raw = value.includes('T') ? value.split('T')[0] : value;
+
+    // DD/MM/YYYY -> DDMMYYYY
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(raw)) {
+      const [dStr, mStr, yStr] = raw.split('/');
+      const d = String(parseInt(dStr, 10)).padStart(2, '0');
+      const m = String(parseInt(mStr, 10)).padStart(2, '0');
+      return `${d}${m}${yStr}`;
+    }
+
+    // YYYY-MM-DD -> DDMMYYYY
+    if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(raw)) {
+      const [yStr, mStr, dStr] = raw.split('-');
+      const d = String(parseInt(dStr, 10)).padStart(2, '0');
+      const m = String(parseInt(mStr, 10)).padStart(2, '0');
+      return `${d}${m}${yStr}`;
+    }
+
+    // Fallback for digit-only / unknown
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length < 8) {
+      return digits;
+    }
+
+    // If it looks like YYYYMMDD -> convert to DDMMYYYY
+    if (/^(19|20)\d{2}\d{2}\d{2}/.test(digits)) {
+      const yyyy = digits.substring(0, 4);
+      const mm = digits.substring(4, 6);
+      const dd = digits.substring(6, 8);
+      return `${dd}${mm}${yyyy}`;
+    }
+
+    // Otherwise assume it starts DDMMYYYY
+    return digits.substring(0, 8);
   }
 
   /**

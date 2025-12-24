@@ -29,13 +29,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+
+import { AppDateAdapter, APP_DATE_FORMATS } from '../../core/date-formats';
 
 
 @NgModule({
@@ -68,7 +70,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatTooltipModule,
     MatPaginatorModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatIconModule,
     MatSlideToggleModule,
     MatChipsModule,
@@ -76,6 +77,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatDividerModule,
     MatMenuModule,
     MatCheckboxModule
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    { provide: DateAdapter, useClass: AppDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS }
   ]
 })
 export class AdminModule { }

@@ -25,6 +25,8 @@ export class EditStudentComponent implements OnInit {
     phone: ''
   };
 
+  dobDate: Date | null = null;
+
   classes: any[] = [];
 
   constructor(
@@ -65,12 +67,14 @@ export class EditStudentComponent implements OnInit {
     
     if (foundStudent) {
       this.student = { ...foundStudent };
+      this.dobDate = this.parseDobToDate(this.student.dob);
       this.isLoading = false;
     } else {
       // Try to load from backend
       this.studentService.getStudentById(parseInt(this.studentId)).subscribe({
         next: (student: Student) => {
           this.student = { ...student, studentId: parseInt(this.studentId) };
+          this.dobDate = this.parseDobToDate(this.student.dob);
           this.isLoading = false;
         },
         error: (err) => {
@@ -86,6 +90,7 @@ export class EditStudentComponent implements OnInit {
             dob: '2005-02-20',
             phone: '9876543210'
           };
+          this.dobDate = this.parseDobToDate(this.student.dob);
           console.warn('Could not load student, using dummy data:', err);
         }
       });
@@ -104,6 +109,9 @@ export class EditStudentComponent implements OnInit {
     }
     
     this.student.studentId = id;
+
+    // Store DOB in DB as DD/MM/YYYY
+    this.student.dob = this.formatDobDDMMYYYY(this.dobDate);
 
     if (this.validateStudentData()) {
       this.isLoading = true;
@@ -159,7 +167,7 @@ export class EditStudentComponent implements OnInit {
       return false;
     }
     
-    if (!this.student.dob) {
+    if (!this.dobDate) {
       this.errorMessage = 'Please select date of birth';
       alert(this.errorMessage);
       return false;
@@ -171,5 +179,59 @@ export class EditStudentComponent implements OnInit {
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  }
+
+  private parseDobToDate(dob: any): Date | null {
+    if (!dob) {
+      return null;
+    }
+
+    if (dob instanceof Date) {
+      return dob;
+    }
+
+    const value = String(dob).trim();
+    if (!value) {
+      return null;
+    }
+
+    // ISO timestamp / YYYY-MM-DD
+    const isoDate = value.includes('T') ? value.split('T')[0] : value;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) {
+      const [y, m, d] = isoDate.split('-').map(v => parseInt(v, 10));
+      return new Date(y, m - 1, d);
+    }
+
+    // DD/MM/YYYY
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value)) {
+      const [dStr, mStr, yStr] = value.split('/');
+      const d = parseInt(dStr, 10);
+      const m = parseInt(mStr, 10);
+      const y = parseInt(yStr, 10);
+      return new Date(y, m - 1, d);
+    }
+
+    // DD-MM-YYYY
+    if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(value)) {
+      const [dStr, mStr, yStr] = value.split('-');
+      const d = parseInt(dStr, 10);
+      const m = parseInt(mStr, 10);
+      const y = parseInt(yStr, 10);
+      return new Date(y, m - 1, d);
+    }
+
+    const parsed = new Date(value);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  private formatDobDDMMYYYY(date: Date | null): string {
+    if (!date) {
+      return '';
+    }
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear());
+    return `${day}/${month}/${year}`;
   }
 }

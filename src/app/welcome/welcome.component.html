@@ -8,7 +8,7 @@
         <mat-icon class="logo-icon">school</mat-icon>
         <h1 class="school-name">Sri Jayadev Shiksha Kendra</h1>
       </div>
-      <p class="tagline">Student Result Portal 2023-24</p>
+      <p class="tagline">Student Result Portal 2025-26</p>
     </div>
 
     <!-- Form Section -->
@@ -53,12 +53,17 @@
         <mat-label>Date of Birth</mat-label>
         <input 
           matInput 
-          type="date"
-          [(ngModel)]="dob" 
+          type="text"
+          inputmode="numeric"
+          autocomplete="bday"
+          placeholder="DD-MM-YYYY"
+          maxlength="10"
+          [(ngModel)]="dob"
+          (ngModelChange)="onDobChange($event)"
           [disabled]="isSearching"
         >
         <mat-icon matPrefix>calendar_today</mat-icon>
-        <mat-hint>Select your date of birth (DD-MM-YYYY)</mat-hint>
+        <mat-hint>Type DOB (DD-MM-YYYY). Example: 27022004 → 27-02-2004</mat-hint>
       </mat-form-field>
 
       <!-- View Result Button -->
@@ -67,7 +72,7 @@
         color="primary" 
         class="view-btn"
         (click)="viewResult()" 
-        [disabled]="isSearching || !rollNo || !dob"
+        [disabled]="isSearching || !rollNo || !hasValidDobInput()"
       >
         <mat-icon>description</mat-icon>
         {{ isSearching ? 'Searching...' : 'View Result' }}
@@ -83,10 +88,10 @@
             <mat-icon>info</mat-icon>
             <span>Please enter your correct roll number and date of birth</span>
           </div>
-          <div class="info-item">
+          <!-- <div class="info-item">
             <mat-icon>warning</mat-icon>
             <span>Demo check ROLL NO- (1A01) &nbsp; DOB -(09-04-2011)</span>
-          </div>
+          </div> -->
         </mat-card-content>
       </mat-card>
     </div>
@@ -106,8 +111,12 @@
 
     <!-- Footer -->
     <div class="footer">
-      <p>© 2023 Sri Jayadev Shiksha Kendra. All rights reserved.</p>
-      <p>Contact: exam@dps.edu.in | Phone: 011-2653-XXXX</p>
+      <p>© 2025 Sri Jayadev Shiksha Kendra. All rights reserved.</p>
+      <p>
+        Developed by
+        <a href="https://github.com/narayan439" target="_blank" rel="noopener noreferrer">Narayan</a>
+      </p>
+      <p>Contact: exam@SJSK.edu.in | Phone:</p>
     </div>
 
   </mat-card>

@@ -30,6 +30,46 @@ export class ViewResultComponent implements OnInit {
   marksSource: string = 'unknown';
   marksMessage: string = '';
 
+  private formatDobDDMMYYYY(dob: any): string {
+    if (!dob) {
+      return '';
+    }
+
+    const value = String(dob).trim();
+    if (!value) {
+      return '';
+    }
+
+    // ISO timestamp -> date-only
+    const raw = value.includes('T') ? value.split('T')[0] : value;
+
+    // Already DD/MM/YYYY (or D/M/YYYY)
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(raw)) {
+      const [dStr, mStr, yStr] = raw.split('/');
+      const d = String(parseInt(dStr, 10)).padStart(2, '0');
+      const m = String(parseInt(mStr, 10)).padStart(2, '0');
+      return `${d}/${m}/${yStr}`;
+    }
+
+    // YYYY-MM-DD
+    if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(raw)) {
+      const [yStr, mStr, dStr] = raw.split('-');
+      const d = String(parseInt(dStr, 10)).padStart(2, '0');
+      const m = String(parseInt(mStr, 10)).padStart(2, '0');
+      return `${d}/${m}/${yStr}`;
+    }
+
+    // DD-MM-YYYY
+    if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(raw)) {
+      const [dStr, mStr, yStr] = raw.split('-');
+      const d = String(parseInt(dStr, 10)).padStart(2, '0');
+      const m = String(parseInt(mStr, 10)).padStart(2, '0');
+      return `${d}/${m}/${yStr}`;
+    }
+
+    return value;
+  }
+
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
@@ -304,10 +344,19 @@ export class ViewResultComponent implements OnInit {
 
       if (allowedSubjects.size > 0) {
         const beforeCount = validMarks.length;
-        validMarks = validMarks.filter((m: any) => {
+        const filteredBySubjects = validMarks.filter((m: any) => {
           const subjectName = (m.subject || m.subjectName || '').toString().trim().toLowerCase();
           return allowedSubjects.has(subjectName);
         });
+
+        // IMPORTANT: If filtering removes everything but we DO have marks,
+        // keep the marks instead of showing "Marks Not Available".
+        // This happens when subject names differ between Marks vs Subjects list.
+        if (filteredBySubjects.length === 0 && beforeCount > 0) {
+          console.warn('⚠️ Subject filter removed all marks; showing unfiltered marks instead');
+        } else {
+          validMarks = filteredBySubjects;
+        }
 
         // De-duplicate by subject (keep the latest/highest marksId)
         const bySubject = new Map<string, any>();
@@ -315,8 +364,8 @@ export class ViewResultComponent implements OnInit {
           const key = (m.subject || m.subjectName || '').toString().trim().toLowerCase();
           if (!key) continue;
           const existing = bySubject.get(key);
-          const existingId = typeof existing?.marksId === 'number' ? existing.marksId : -1;
-          const currentId = typeof m?.marksId === 'number' ? m.marksId : -1;
+          const existingId = Number(existing?.marksId) || -1;
+          const currentId = Number(m?.marksId) || -1;
           if (!existing || currentId >= existingId) {
             bySubject.set(key, m);
           }
@@ -366,7 +415,7 @@ export class ViewResultComponent implements OnInit {
       name: this.student.name,
       rollNo: this.student.rollNo,
       email: this.student.email,
-      dob: this.student.dob || 'N/A',
+      dob: this.formatDobDDMMYYYY(this.student.dob) || 'N/A',
       phone: this.student.phone || 'N/A',
       className: this.student.className,
       marks: validMarks.map((m: any) => ({
@@ -522,8 +571,9 @@ export class ViewResultComponent implements OnInit {
    */
   private generateQRData(): void {
     if (!this.student) return;
-    
-    this.qrData = `NAME:${this.student.name}|ROLL:${this.student.rollNo}|DOB:${this.student.dob}|EMAIL:${this.student.email}|CLASS:${this.student.className}`;
+
+    const dob = this.formatDobDDMMYYYY(this.student.dob) || (this.student.dob || '');
+    this.qrData = `NAME:${this.student.name}|ROLL:${this.student.rollNo}|DOB:${dob}|EMAIL:${this.student.email}|CLASS:${this.student.className}`;
     console.log('✓ QR Data Generated:', this.qrData);
   }
 
@@ -538,7 +588,8 @@ export class ViewResultComponent implements OnInit {
     const percentage = this.result.percentage || '0.00';
     const status = this.result.status || 'PENDING';
     
-    this.qrData = `NAME:${this.student.name}|ROLL:${this.student.rollNo}|DOB:${this.student.dob}|TOTAL:${totalMarks}|PERCENT:${percentage}|STATUS:${status}|CLASS:${this.student.className}`;
+    const dob = this.formatDobDDMMYYYY(this.student.dob) || (this.student.dob || '');
+    this.qrData = `NAME:${this.student.name}|ROLL:${this.student.rollNo}|DOB:${dob}|TOTAL:${totalMarks}|PERCENT:${percentage}|STATUS:${status}|CLASS:${this.student.className}`;
     console.log('✓ QR Data Updated with Marks:', this.qrData);
   }
 }
