@@ -64,6 +64,7 @@ export class AdminComponent {
 
   logout(): void {
     console.log('🔓 Admin logout initiated');
+    this.closeMobileMenu();
     this.authService.logout();
     this.router.navigate(['/login']);
   }

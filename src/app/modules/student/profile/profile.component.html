@@ -17,7 +17,7 @@
         <mat-icon class="avatar-icon">school</mat-icon>
       </div>
       <h3 class="profile-name">{{ student?.name || 'Loading...' }}</h3>
-      <p class="profile-class">Class {{ student?.className }}</p>
+      <p class="profile-class">{{ student?.className }}</p>
     </div>
 
     <!-- Profile Information -->
@@ -75,7 +75,7 @@
           </div>
           <div class="info-content">
             <span class="info-label">Date of Birth</span>
-            <p class="info-value">{{ student?.dob || '-' }}</p>
+            <p class="info-value">{{ displayDob(student?.dob) }}</p>
           </div>
         </div>
 
@@ -149,6 +149,10 @@
   <!-- Footer -->
   <div class="profile-footer">
     <p>© 2024 Sri Jayadev Shiksha Kendra</p>
+    <p>
+      Developed by
+      <a href="https://github.com/narayan439" target="_blank" rel="noopener noreferrer">Narayan</a>
+    </p>
     <p>Profile information is read-only</p>
   </div>
 

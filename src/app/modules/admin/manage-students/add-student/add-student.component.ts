@@ -20,6 +20,8 @@ export class AddStudentComponent implements OnInit {
     phone: ''
   };
 
+  dobDate: Date | null = null;
+
   classes: any[] = [];
   isLoading = false;
   errorMessage = '';
@@ -124,6 +126,9 @@ export class AddStudentComponent implements OnInit {
     // Clear previous error message
     this.errorMessage = '';
 
+    // Store DOB in DB as DD/MM/YYYY
+    this.student.dob = this.formatDobDDMMYYYY(this.dobDate);
+
     if (this.validateStudentData()) {
       this.isLoading = true;
       
@@ -178,7 +183,7 @@ export class AddStudentComponent implements OnInit {
       return false;
     }
     
-    if (!this.student.dob) {
+    if (!this.dobDate) {
       this.errorMessage = 'Please select date of birth';
       alert(this.errorMessage);
       return false;
@@ -214,5 +219,16 @@ export class AddStudentComponent implements OnInit {
     }
     
     return true;
+  }
+
+  private formatDobDDMMYYYY(date: Date | null): string {
+    if (!date) {
+      return '';
+    }
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear());
+    return `${day}/${month}/${year}`;
   }
 }

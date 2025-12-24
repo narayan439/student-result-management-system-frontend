@@ -25,6 +25,42 @@ export class ProfileComponent implements OnInit {
     this.loadStudentProfile();
   }
 
+  displayDob(dob: any): string {
+    if (!dob) {
+      return '-';
+    }
+
+    const value = String(dob).trim();
+    if (!value) {
+      return '-';
+    }
+
+    const raw = value.includes('T') ? value.split('T')[0] : value;
+
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(raw)) {
+      const [dStr, mStr, yStr] = raw.split('/');
+      const d = String(parseInt(dStr, 10)).padStart(2, '0');
+      const m = String(parseInt(mStr, 10)).padStart(2, '0');
+      return `${d}/${m}/${yStr}`;
+    }
+
+    if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(raw)) {
+      const [yStr, mStr, dStr] = raw.split('-');
+      const d = String(parseInt(dStr, 10)).padStart(2, '0');
+      const m = String(parseInt(mStr, 10)).padStart(2, '0');
+      return `${d}/${m}/${yStr}`;
+    }
+
+    if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(raw)) {
+      const [dStr, mStr, yStr] = raw.split('-');
+      const d = String(parseInt(dStr, 10)).padStart(2, '0');
+      const m = String(parseInt(mStr, 10)).padStart(2, '0');
+      return `${d}/${m}/${yStr}`;
+    }
+
+    return value;
+  }
+
   /**
    * Load current student's profile
    */
