@@ -281,16 +281,8 @@
           <td mat-cell *matCellDef="let schoolClass">
             <div class="class-badge">
               <mat-icon class="class-icon">class</mat-icon>
-              <strong>{{ schoolClass.className }}</strong>
+              <span class="class-name-pill">{{ schoolClass.className }}</span>
             </div>
-          </td>
-        </ng-container>
-
-        <!-- Class Column -->
-        <ng-container matColumnDef="classNumber">
-          <th mat-header-cell *matHeaderCellDef> Class </th>
-          <td mat-cell *matCellDef="let schoolClass">
-            <mat-chip class="class-chip">Class {{ schoolClass.classNumber }}</mat-chip>
           </td>
         </ng-container>
 
@@ -308,8 +300,16 @@
           <td mat-cell *matCellDef="let schoolClass">
             <div class="subjects-cell">
               <mat-icon class="subjects-icon">library_books</mat-icon>
-              <span *ngIf="schoolClass.subjectList">{{ schoolClass.subjectList }}</span>
-              <span *ngIf="!schoolClass.subjectList" class="no-subjects">—</span>
+              <ng-container *ngIf="schoolClass.subjectList; else noSubjects">
+                <div class="subjects-bullets">
+                  <div class="subject-item" *ngFor="let s of getSubjectItems(schoolClass.subjectList)">
+                    {{ s }}
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #noSubjects>
+                <span class="no-subjects">—</span>
+              </ng-template>
             </div>
           </td>
         </ng-container>
@@ -367,7 +367,6 @@
               <div class="header-info">
                 <h3 class="class-name">{{ schoolClass.className }}</h3>
                 <p class="class-meta">
-                  <mat-chip class="class-chip">Class {{ schoolClass.classNumber }}</mat-chip>
                   <mat-chip class="student-chip">Max Capacity: {{ schoolClass.maxCapacity }}</mat-chip>
                 </p>
               </div>
@@ -392,10 +391,12 @@
           </mat-card-header>
 
           <mat-card-content>
-            <div class="card-stats">
-              <div class="stat">
-                <span class="stat-label">Class Number:</span>
-                <span class="stat-value">{{ schoolClass.classNumber }}</span>
+            <div class="card-subjects" *ngIf="schoolClass.subjectList">
+              <div class="card-section-title">Subjects</div>
+              <div class="subjects-bullets">
+                <div class="subject-item" *ngFor="let s of getSubjectItems(schoolClass.subjectList)">
+                  {{ s }}
+                </div>
               </div>
             </div>
           </mat-card-content>

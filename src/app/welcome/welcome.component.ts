@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { MarksService } from '../core/services/marks.service';
 import { StudentService } from '../core/services/student.service';
+import { SubjectService } from '../core/services/subject.service';
 
 @Component({
   selector: 'app-welcome',
@@ -16,10 +19,333 @@ export class WelcomeComponent {
   isSearching: boolean = false;
   foundStudent: any = null;
 
+  // Result Bot
+  botOpen = false;
+  botLoading = false;
+  botInput = '';
+  botStep: 'roll' | 'dob' = 'roll';
+  botStudent: any = null;
+  botRollNo = '';
+  botDob = '';
+  botMessages: Array<{ from: 'bot' | 'user'; text: string }> = [];
+
   constructor(
     private router: Router,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private marksService: MarksService,
+    private subjectService: SubjectService
   ) {}
+
+  toggleBot(): void {
+    this.botOpen = !this.botOpen;
+
+    if (this.botOpen && this.botMessages.length === 0) {
+      this.resetBot();
+    }
+  }
+
+  resetBot(): void {
+    this.botLoading = false;
+    this.botInput = '';
+    this.botStep = 'roll';
+    this.botStudent = null;
+    this.botRollNo = '';
+    this.botDob = '';
+    this.botMessages = [
+      { from: 'bot', text: 'Hi! Enter your Roll Number to check result.' }
+    ];
+  }
+
+  sendBot(): void {
+    const rawInput = (this.botInput || '').trim();
+    if (!rawInput || this.botLoading) return;
+
+    const inputForStep = this.botStep === 'dob' ? this.formatDobForTyping(rawInput) : rawInput;
+
+    this.botMessages.push({ from: 'user', text: inputForStep });
+    this.botInput = '';
+
+    if (this.botStep === 'roll') {
+      this.handleBotRoll(inputForStep);
+      return;
+    }
+
+    if (this.botStep === 'dob') {
+      this.handleBotDob(inputForStep);
+      return;
+    }
+  }
+
+  private handleBotRoll(rollNo: string): void {
+    this.botLoading = true;
+    this.botRollNo = rollNo;
+    this.botStudent = null;
+
+    const lookup = (students: any[]) => {
+      const student = (students || []).find((s: any) =>
+        s?.rollNo && String(s.rollNo).toLowerCase() === rollNo.toLowerCase()
+      );
+
+      if (!student) {
+        this.botLoading = false;
+        this.botMessages.push({ from: 'bot', text: `Roll Number "${rollNo}" not found. Please re-check and try again.` });
+        this.botMessages.push({ from: 'bot', text: 'Enter your Roll Number:' });
+        return;
+      }
+
+      this.botStudent = student;
+      this.botLoading = false;
+      this.botStep = 'dob';
+      this.botMessages.push({ from: 'bot', text: `Student Name: ${student.name}` });
+      this.botMessages.push({ from: 'bot', text: 'Now enter your Date of Birth (DD-MM-YYYY).' });
+    };
+
+    this.studentService.getAllStudents().subscribe({
+      next: (students: any) => {
+        lookup(students);
+      },
+      error: () => {
+        const cached = this.studentService.getAllStudentsSync();
+        lookup(cached);
+      }
+    });
+  }
+
+  private handleBotDob(dobInput: string): void {
+    if (!this.botStudent) {
+      this.botMessages.push({ from: 'bot', text: 'Please enter your Roll Number first.' });
+      this.botStep = 'roll';
+      return;
+    }
+
+    const normalizedInput = this.normalizeDobToYmd(dobInput);
+    const normalizedStudent = this.normalizeDobToYmd(this.botStudent?.dob);
+
+    if (!normalizedInput) {
+      this.botMessages.push({ from: 'bot', text: 'DOB format is incorrect. Please enter DOB in DD-MM-YYYY (Example: 27-02-2004).' });
+      return;
+    }
+
+    if (!normalizedStudent) {
+      this.botMessages.push({ from: 'bot', text: 'DOB not available in student record. Please contact admin.' });
+      this.botStep = 'roll';
+      return;
+    }
+
+    if (normalizedInput !== normalizedStudent) {
+      this.botMessages.push({ from: 'bot', text: 'DOB incorrect. Please enter correct DOB (DD-MM-YYYY).' });
+      return;
+    }
+
+    // DOB verified -> show marks directly (no confirmation step)
+    this.botDob = normalizedInput;
+    this.fetchAndShowBotResult();
+  }
+
+  private fetchAndShowBotResult(): void {
+    if (!this.botStudent) {
+      this.resetBot();
+      return;
+    }
+
+    const student = this.botStudent;
+    this.botLoading = true;
+    this.botMessages.push({ from: 'bot', text: 'Fetching your marks...' });
+
+    const classMatch = String(student?.className || '').match(/Class\s(\d+)/);
+    const classNumber = classMatch ? parseInt(classMatch[1], 10) : 1;
+
+    forkJoin({
+      marks: this.marksService.getMarksByStudentId(student.studentId),
+      subjects: this.subjectService.getSubjectsByClass(classNumber)
+    }).subscribe({
+      next: (data) => {
+        const result = this.buildBotResult(student, data.marks, data.subjects);
+        this.emitBotResultMessages(result);
+
+        // Reset for next query
+        this.botLoading = false;
+        this.botStep = 'roll';
+        this.botStudent = null;
+        this.botRollNo = '';
+        this.botDob = '';
+        this.botMessages.push({ from: 'bot', text: 'You can check another student. Enter Roll Number:' });
+      },
+      error: () => {
+        this.botLoading = false;
+        this.botStep = 'roll';
+        this.botStudent = null;
+        this.botRollNo = '';
+        this.botDob = '';
+        this.botMessages.push({ from: 'bot', text: 'Unable to fetch marks right now. Please try again later.' });
+        this.botMessages.push({ from: 'bot', text: 'Enter Roll Number:' });
+      }
+    });
+  }
+
+  private buildBotResult(student: any, marksResponse: any, subjectsResponse: any): any {
+    // Extract marks array from response (same shapes as ViewResultComponent)
+    let marksArray: any[] = [];
+    if (Array.isArray(marksResponse)) {
+      marksArray = marksResponse;
+    } else if (marksResponse?.data && Array.isArray(marksResponse.data)) {
+      marksArray = marksResponse.data;
+    }
+
+    // Extract subjects array
+    let classSubjects: any[] = [];
+    if (Array.isArray(subjectsResponse)) {
+      classSubjects = subjectsResponse;
+    } else if (subjectsResponse?.data && Array.isArray(subjectsResponse.data)) {
+      classSubjects = subjectsResponse.data;
+    }
+
+    // Validate and extract marks
+    let validMarks = (marksArray || []).filter((m: any) => {
+      const hasMarks = m?.marksObtained !== undefined && m?.marksObtained !== null;
+      const hasSubject = m?.subject || m?.subjectName;
+      return hasMarks && hasSubject;
+    });
+
+    // If class subjects exist, filter + dedupe + sort using subject list order
+    if (classSubjects && classSubjects.length > 0) {
+      const allowedSubjects = new Set(
+        classSubjects
+          .map((s: any) => (s?.subjectName || s?.name || '').toString().trim().toLowerCase())
+          .filter((s: string) => !!s)
+      );
+
+      const subjectOrder = new Map<string, number>();
+      classSubjects.forEach((s: any, idx: number) => {
+        const key = (s?.subjectName || s?.name || '').toString().trim().toLowerCase();
+        if (key) subjectOrder.set(key, idx);
+      });
+
+      if (allowedSubjects.size > 0) {
+        const beforeCount = validMarks.length;
+        const filteredBySubjects = validMarks.filter((m: any) => {
+          const subjectName = (m?.subject || m?.subjectName || '').toString().trim().toLowerCase();
+          return allowedSubjects.has(subjectName);
+        });
+
+        // If filtering removes everything but we do have marks, keep unfiltered marks
+        if (!(filteredBySubjects.length === 0 && beforeCount > 0)) {
+          validMarks = filteredBySubjects;
+        }
+
+        // De-duplicate by subject (keep the latest/highest marksId)
+        const bySubject = new Map<string, any>();
+        for (const m of validMarks) {
+          const key = (m?.subject || m?.subjectName || '').toString().trim().toLowerCase();
+          if (!key) continue;
+          const existing = bySubject.get(key);
+          const existingId = Number(existing?.marksId) || -1;
+          const currentId = Number(m?.marksId) || -1;
+          if (!existing || currentId >= existingId) {
+            bySubject.set(key, m);
+          }
+        }
+        validMarks = Array.from(bySubject.values());
+
+        if (subjectOrder.size > 0) {
+          validMarks.sort((a: any, b: any) => {
+            const ak = (a?.subject || a?.subjectName || '').toString().trim().toLowerCase();
+            const bk = (b?.subject || b?.subjectName || '').toString().trim().toLowerCase();
+            const ai = subjectOrder.has(ak) ? (subjectOrder.get(ak) as number) : 9999;
+            const bi = subjectOrder.has(bk) ? (subjectOrder.get(bk) as number) : 9999;
+            return ai - bi;
+          });
+        }
+      }
+    }
+
+    const passMark = 33;
+
+    // Subject code mapping (by subject name)
+    const subjectCodeByName = new Map<string, string>();
+    for (const s of classSubjects || []) {
+      const nameKey = (s?.subjectName || s?.name || '').toString().trim().toLowerCase();
+      const code = (s?.code || s?.subjectCode || '').toString().trim();
+      if (nameKey && code) {
+        subjectCodeByName.set(nameKey, code);
+      }
+    }
+
+    const rows = validMarks.map((m: any) => {
+      const subjectName = (m?.subject || m?.subjectName || 'Unknown').toString();
+      const key = subjectName.trim().toLowerCase();
+      const subjectCode = subjectCodeByName.get(key)
+        || (m?.code || m?.subjectCode || '').toString().trim()
+        || '-';
+      return {
+        subjectCode,
+        subject: subjectName,
+        marksObtained: parseInt(m?.marksObtained, 10) || 0,
+        maxMarks: parseInt(m?.maxMarks, 10) || 100
+      };
+    });
+
+    const totalMarks = rows.reduce((sum: number, r: any) => sum + (Number(r?.marksObtained) || 0), 0);
+    const maxTotal = rows.reduce((sum: number, r: any) => sum + (Number(r?.maxMarks) || 0), 0);
+    const percentage = maxTotal > 0 ? ((totalMarks / maxTotal) * 100).toFixed(2) : '0.00';
+
+    let status = 'PENDING';
+    if (rows.length > 0) {
+      const hasAnyFailedSubject = rows.some((r: any) => (Number(r?.marksObtained) || 0) < passMark);
+      status = hasAnyFailedSubject ? 'FAIL' : 'PASS';
+    }
+
+    const failedSubjects = rows
+      .filter((r: any) => (Number(r?.marksObtained) || 0) < passMark)
+      .map((r: any) => r.subject);
+
+    return {
+      name: student?.name,
+      rollNo: student?.rollNo,
+      className: student?.className,
+      rows,
+      total: totalMarks,
+      maxTotal,
+      percentage,
+      status,
+      failedSubjects,
+      hasMarks: rows.length > 0
+    };
+  }
+
+  private emitBotResultMessages(result: any): void {
+    if (!result) {
+      this.botMessages.push({ from: 'bot', text: 'No result data available.' });
+      return;
+    }
+
+    this.botMessages.push({
+      from: 'bot',
+      text: `Result for ${result.name} (Roll: ${result.rollNo})\nClass: ${result.className}`
+    });
+
+    if (!result.hasMarks) {
+      this.botMessages.push({ from: 'bot', text: 'Marks not available yet (PENDING).' });
+      return;
+    }
+
+    for (const r of result.rows) {
+      this.botMessages.push({
+        from: 'bot',
+        text: `${r.subject} = ${r.marksObtained}/${r.maxMarks}`
+      });
+    }
+
+    const failedList = Array.isArray(result.failedSubjects) ? result.failedSubjects.filter(Boolean) : [];
+    const failedText = result.status === 'FAIL' && failedList.length > 0
+      ? `\nFailed Subject = ${failedList.join(' , ')}`
+      : '';
+
+    this.botMessages.push({
+      from: 'bot',
+      text: `TOTAL: ${result.total}/${result.maxTotal}\nPERCENTAGE: ${result.percentage}%\nResult: ${result.status}${failedText}`
+    });
+  }
 
   /**
    * Auto-format DOB input so mobile users can type digits.
@@ -49,6 +375,8 @@ export class WelcomeComponent {
     const yyyy = digits.slice(4);
     return `${dd}-${mm}-${yyyy}`;
   }
+
+
 
   /**
    * Normalize DOB to canonical YYYY-MM-DD for comparison.

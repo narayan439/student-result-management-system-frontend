@@ -12,7 +12,7 @@ import { NotificationService } from '../../../core/services/notification.service
 })
 export class ManageClassesComponent implements OnInit {
 
-  displayedColumns: string[] = ['className', 'classNumber', 'subjects', 'studentCount', 'actions'];
+  displayedColumns: string[] = ['className', 'subjects', 'studentCount', 'actions'];
   dataSource!: MatTableDataSource<SchoolClass>;
   
   classes: SchoolClass[] = [];
@@ -79,6 +79,14 @@ export class ManageClassesComponent implements OnInit {
   getStudentCountForClass(classNumber: number): number {
     if (!this.students.length) return 0;
     return this.students.filter(s => s.className === `Class ${classNumber}`).length;
+  }
+
+  getSubjectItems(subjectList?: string | null): string[] {
+    if (!subjectList) return [];
+    return String(subjectList)
+      .split(',')
+      .map(s => s.trim())
+      .filter(s => !!s);
   }
 
   loadClasses(): void {
