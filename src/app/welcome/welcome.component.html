@@ -120,4 +120,60 @@
     </div>
 
   </mat-card>
+
+  <!-- Result Bot (floating) -->
+  <button
+    mat-fab
+    color="primary"
+    class="result-bot-fab"
+    type="button"
+    (click)="toggleBot()"
+    aria-label="Open result bot"
+  >
+    <mat-icon>{{ botOpen ? 'close' : 'support_agent' }}</mat-icon>
+  </button>
+
+  <div *ngIf="botOpen" class="result-bot-panel" role="dialog" aria-label="Result Bot">
+    <div class="bot-header">
+      <div class="bot-title">
+        <mat-icon>support_agent</mat-icon>
+        <span>Result Bot</span>
+      </div>
+      <button mat-icon-button type="button" (click)="toggleBot()" aria-label="Close bot">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="bot-body">
+      <div *ngFor="let msg of botMessages" class="bot-msg" [class.user]="msg.from === 'user'" [class.bot]="msg.from === 'bot'">
+        <div class="bubble">{{ msg.text }}</div>
+      </div>
+    </div>
+
+    <div class="bot-footer">
+      <mat-form-field appearance="outline" class="bot-input">
+        <mat-label>{{ botStep === 'roll' ? 'Enter Roll Number' : 'Enter DOB (DD-MM-YYYY)' }}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="botInput"
+          (keyup.enter)="sendBot()"
+          [disabled]="botLoading"
+          [attr.inputmode]="botStep === 'dob' ? 'numeric' : null"
+          [attr.autocomplete]="botStep === 'dob' ? 'bday' : null"
+          [attr.maxlength]="botStep === 'dob' ? 10 : 20"
+        />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        class="bot-send"
+        (click)="sendBot()"
+        [disabled]="botLoading || !botInput.trim()"
+      >
+        <mat-icon>{{ botLoading ? 'hourglass_empty' : 'send' }}</mat-icon>
+        {{ botLoading ? 'Please wait' : 'Send' }}
+      </button>
+    </div>
+  </div>
 </div>
