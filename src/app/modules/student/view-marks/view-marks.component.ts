@@ -15,6 +15,7 @@ export class ViewMarksComponent implements OnInit {
   
   // Student Info
   student: Student | null = null;
+  year: number = new Date().getFullYear();
   studentName = '';
   studentClass = '';
   studentRollNo = '';

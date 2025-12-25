@@ -16,6 +16,7 @@ import { NotificationService } from '../../../core/services/notification.service
 export class RequestRecheckComponent implements OnInit {
 
   student: Student | null = null;
+  year: number = new Date().getFullYear();
   subjects: any[] = [];
   studentClassNumber: number = 0;
   subjectMarks: { [key: string]: number } = {};

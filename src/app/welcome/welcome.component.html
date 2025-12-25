@@ -1,4 +1,4 @@
-<div class="welcome-container">
+<div class="welcome-container" [style.--keyboard-offset]="keyboardOffsetPx + 'px'">
   <!-- Main Card -->
   <mat-card class="welcome-card">
     
@@ -111,7 +111,7 @@
 
     <!-- Footer -->
     <div class="footer">
-      <p>© 2025 Sri Jayadev Shiksha Kendra. All rights reserved.</p>
+      <p>© {{ year }} Sri Jayadev Shiksha Kendra. All rights reserved.</p>
       <p>
         Developed by
         <a href="https://github.com/narayan439" target="_blank" rel="noopener noreferrer">Narayan</a>
@@ -144,7 +144,7 @@
       </button>
     </div>
 
-    <div class="bot-body">
+    <div class="bot-body" #botBody (scroll)="onBotScroll($event)">
       <div *ngFor="let msg of botMessages" class="bot-msg" [class.user]="msg.from === 'user'" [class.bot]="msg.from === 'bot'">
         <div class="bubble">{{ msg.text }}</div>
       </div>
@@ -157,10 +157,12 @@
           matInput
           [(ngModel)]="botInput"
           (keyup.enter)="sendBot()"
+          (focus)="onBotInputFocus()"
           [disabled]="botLoading"
           [attr.inputmode]="botStep === 'dob' ? 'numeric' : null"
           [attr.autocomplete]="botStep === 'dob' ? 'bday' : null"
           [attr.maxlength]="botStep === 'dob' ? 10 : 20"
+          #botInputEl
         />
       </mat-form-field>
       <button

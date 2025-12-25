@@ -20,6 +20,7 @@ export class LoginComponent {
 
   isLoading: boolean = false;
   showPassword: boolean = false;
+  year: number = new Date().getFullYear();
 
   constructor(
     private auth: AuthService,

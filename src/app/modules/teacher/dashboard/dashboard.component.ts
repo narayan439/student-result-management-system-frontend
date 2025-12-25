@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   mobileMenuOpen = false;
   teacherName = 'Teacher';
   teacherEmail = '';
+  year: number = new Date().getFullYear();
   
   students = [
     { name: 'Narayan', rollNo: '23' },

@@ -14,6 +14,7 @@ import { NotificationService } from '../../../core/services/notification.service
 export class TrackRecheckComponent implements OnInit {
 
   student: Student | null = null;
+  year: number = new Date().getFullYear();
   columns: string[] = ['subject', 'date', 'status'];
 
   requests: any[] = [];
