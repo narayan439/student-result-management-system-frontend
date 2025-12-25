@@ -15,6 +15,7 @@ export class ProfileComponent implements OnInit {
   student: Student | null = null;
   isEditing = false;
   editData: any = {};
+  year: number = new Date().getFullYear();
 
   constructor(
     private studentService: StudentService,

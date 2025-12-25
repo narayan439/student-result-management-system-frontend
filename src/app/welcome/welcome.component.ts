@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { MarksService } from '../core/services/marks.service';
@@ -12,12 +12,16 @@ import { SubjectService } from '../core/services/subject.service';
 })
 export class WelcomeComponent {
 
+  @ViewChild('botBody') private botBodyRef?: ElementRef<HTMLElement>;
+  @ViewChild('botInputEl') private botInputRef?: ElementRef<HTMLInputElement>;
+
   rollNo: string = '';
   dob: string = '';
   rollNoError: string = '';
   dobError: string = '';
   isSearching: boolean = false;
   foundStudent: any = null;
+  year: number = new Date().getFullYear();
 
   // Result Bot
   botOpen = false;
@@ -29,18 +33,38 @@ export class WelcomeComponent {
   botDob = '';
   botMessages: Array<{ from: 'bot' | 'user'; text: string }> = [];
 
+  keyboardOffsetPx = 0;
+  private shouldAutoScroll = true;
+  private viewportCleanup: (() => void) | null = null;
+
   constructor(
     private router: Router,
     private studentService: StudentService,
     private marksService: MarksService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private ngZone: NgZone
   ) {}
+
+  ngAfterViewInit(): void {
+    this.setupVisualViewportListener();
+    this.queueBotScrollToBottom();
+  }
+
+  ngOnDestroy(): void {
+    this.viewportCleanup?.();
+    this.viewportCleanup = null;
+  }
 
   toggleBot(): void {
     this.botOpen = !this.botOpen;
 
     if (this.botOpen && this.botMessages.length === 0) {
       this.resetBot();
+      return;
+    }
+
+    if (this.botOpen) {
+      this.queueBotScrollToBottom();
     }
   }
 
@@ -54,6 +78,8 @@ export class WelcomeComponent {
     this.botMessages = [
       { from: 'bot', text: 'Hi! Enter your Roll Number to check result.' }
     ];
+    this.shouldAutoScroll = true;
+    this.queueBotScrollToBottom();
   }
 
   sendBot(): void {
@@ -62,7 +88,7 @@ export class WelcomeComponent {
 
     const inputForStep = this.botStep === 'dob' ? this.formatDobForTyping(rawInput) : rawInput;
 
-    this.botMessages.push({ from: 'user', text: inputForStep });
+    this.pushBotMessage('user', inputForStep);
     this.botInput = '';
 
     if (this.botStep === 'roll') {
@@ -88,16 +114,16 @@ export class WelcomeComponent {
 
       if (!student) {
         this.botLoading = false;
-        this.botMessages.push({ from: 'bot', text: `Roll Number "${rollNo}" not found. Please re-check and try again.` });
-        this.botMessages.push({ from: 'bot', text: 'Enter your Roll Number:' });
+        this.pushBotMessage('bot', `Roll Number "${rollNo}" not found. Please re-check and try again.`);
+        this.pushBotMessage('bot', 'Enter your Roll Number:');
         return;
       }
 
       this.botStudent = student;
       this.botLoading = false;
       this.botStep = 'dob';
-      this.botMessages.push({ from: 'bot', text: `Student Name: ${student.name}` });
-      this.botMessages.push({ from: 'bot', text: 'Now enter your Date of Birth (DD-MM-YYYY).' });
+      this.pushBotMessage('bot', `Student Name: ${student.name}`);
+      this.pushBotMessage('bot', 'Now enter your Date of Birth (DD-MM-YYYY).');
     };
 
     this.studentService.getAllStudents().subscribe({
@@ -113,7 +139,7 @@ export class WelcomeComponent {
 
   private handleBotDob(dobInput: string): void {
     if (!this.botStudent) {
-      this.botMessages.push({ from: 'bot', text: 'Please enter your Roll Number first.' });
+      this.pushBotMessage('bot', 'Please enter your Roll Number first.');
       this.botStep = 'roll';
       return;
     }
@@ -122,18 +148,18 @@ export class WelcomeComponent {
     const normalizedStudent = this.normalizeDobToYmd(this.botStudent?.dob);
 
     if (!normalizedInput) {
-      this.botMessages.push({ from: 'bot', text: 'DOB format is incorrect. Please enter DOB in DD-MM-YYYY (Example: 27-02-2004).' });
+      this.pushBotMessage('bot', 'DOB format is incorrect. Please enter DOB in DD-MM-YYYY (Example: 27-02-2004).');
       return;
     }
 
     if (!normalizedStudent) {
-      this.botMessages.push({ from: 'bot', text: 'DOB not available in student record. Please contact admin.' });
+      this.pushBotMessage('bot', 'DOB not available in student record. Please contact admin.');
       this.botStep = 'roll';
       return;
     }
 
     if (normalizedInput !== normalizedStudent) {
-      this.botMessages.push({ from: 'bot', text: 'DOB incorrect. Please enter correct DOB (DD-MM-YYYY).' });
+      this.pushBotMessage('bot', 'DOB incorrect. Please enter correct DOB (DD-MM-YYYY).');
       return;
     }
 
@@ -150,7 +176,7 @@ export class WelcomeComponent {
 
     const student = this.botStudent;
     this.botLoading = true;
-    this.botMessages.push({ from: 'bot', text: 'Fetching your marks...' });
+    this.pushBotMessage('bot', 'Fetching your marks...');
 
     const classMatch = String(student?.className || '').match(/Class\s(\d+)/);
     const classNumber = classMatch ? parseInt(classMatch[1], 10) : 1;
@@ -169,7 +195,7 @@ export class WelcomeComponent {
         this.botStudent = null;
         this.botRollNo = '';
         this.botDob = '';
-        this.botMessages.push({ from: 'bot', text: 'You can check another student. Enter Roll Number:' });
+        this.pushBotMessage('bot', 'You can check another student. Enter Roll Number:');
       },
       error: () => {
         this.botLoading = false;
@@ -177,8 +203,8 @@ export class WelcomeComponent {
         this.botStudent = null;
         this.botRollNo = '';
         this.botDob = '';
-        this.botMessages.push({ from: 'bot', text: 'Unable to fetch marks right now. Please try again later.' });
-        this.botMessages.push({ from: 'bot', text: 'Enter Roll Number:' });
+        this.pushBotMessage('bot', 'Unable to fetch marks right now. Please try again later.');
+        this.pushBotMessage('bot', 'Enter Roll Number:');
       }
     });
   }
@@ -315,25 +341,19 @@ export class WelcomeComponent {
 
   private emitBotResultMessages(result: any): void {
     if (!result) {
-      this.botMessages.push({ from: 'bot', text: 'No result data available.' });
+      this.pushBotMessage('bot', 'No result data available.');
       return;
     }
 
-    this.botMessages.push({
-      from: 'bot',
-      text: `Result for ${result.name} (Roll: ${result.rollNo})\nClass: ${result.className}`
-    });
+    this.pushBotMessage('bot', `Result for ${result.name} (Roll: ${result.rollNo})\nClass: ${result.className}`);
 
     if (!result.hasMarks) {
-      this.botMessages.push({ from: 'bot', text: 'Marks not available yet (PENDING).' });
+      this.pushBotMessage('bot', 'Marks not available yet (PENDING).');
       return;
     }
 
     for (const r of result.rows) {
-      this.botMessages.push({
-        from: 'bot',
-        text: `${r.subject} = ${r.marksObtained}/${r.maxMarks}`
-      });
+      this.pushBotMessage('bot', `${r.subject} = ${r.marksObtained}/${r.maxMarks}`);
     }
 
     const failedList = Array.isArray(result.failedSubjects) ? result.failedSubjects.filter(Boolean) : [];
@@ -341,10 +361,65 @@ export class WelcomeComponent {
       ? `\nFailed Subject = ${failedList.join(' , ')}`
       : '';
 
-    this.botMessages.push({
-      from: 'bot',
-      text: `TOTAL: ${result.total}/${result.maxTotal}\nPERCENTAGE: ${result.percentage}%\nResult: ${result.status}${failedText}`
-    });
+    this.pushBotMessage('bot', `TOTAL: ${result.total}/${result.maxTotal}\nPERCENTAGE: ${result.percentage}%\nResult: ${result.status}${failedText}`);
+  }
+
+  onBotScroll(event: Event): void {
+    const el = event.target as HTMLElement | null;
+    if (!el) return;
+    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 24;
+    this.shouldAutoScroll = nearBottom;
+  }
+
+  onBotInputFocus(): void {
+    this.shouldAutoScroll = true;
+    this.queueBotScrollToBottom();
+
+    // On mobile, ensure input stays visible above keyboard
+    setTimeout(() => {
+      this.botInputRef?.nativeElement?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      this.queueBotScrollToBottom();
+    }, 250);
+  }
+
+  private pushBotMessage(from: 'bot' | 'user', text: string): void {
+    this.botMessages.push({ from, text });
+    this.queueBotScrollToBottom();
+  }
+
+  private queueBotScrollToBottom(): void {
+    setTimeout(() => this.scrollBotToBottom(), 0);
+  }
+
+  private scrollBotToBottom(): void {
+    if (!this.botOpen || !this.shouldAutoScroll) return;
+    const el = this.botBodyRef?.nativeElement;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }
+
+  private setupVisualViewportListener(): void {
+    const vv = (window as any)?.visualViewport;
+    if (!vv || typeof vv.addEventListener !== 'function') {
+      return;
+    }
+
+    const update = () => {
+      // When keyboard opens, visualViewport height shrinks.
+      const offset = Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0));
+      this.ngZone.run(() => {
+        this.keyboardOffsetPx = Math.round(offset);
+      });
+    };
+
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    update();
+
+    this.viewportCleanup = () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
   }
 
   /**

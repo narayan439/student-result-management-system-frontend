@@ -1,14 +1,10 @@
-
-
-
-
 <div class="manage-classes-container">
   
   <!-- Header Section -->
   <div class="page-header">
     <div class="header-left">
       <h1 class="page-title">Manage Classes</h1>
-      <p class="page-subtitle">View, and manage all classes in the system</p>
+      <p class="page-subtitle">View and manage all classes in the system</p>
     </div>
   </div>
 
@@ -19,23 +15,14 @@
     <div class="card-header">
       <h2>All Classes</h2>
       <div class="header-actions">
-        <!-- <span class="count-badge">{{activeClassesCount}} Active Classes</span> -->
         <button 
-          mat-icon-button 
-          (click)="toggleShowDeletedClasses()"
-          [color]="showDeletedClasses ? 'warn' : 'primary'"
-          matTooltip="Show/Hide Deleted Classes"
-        >
-          <!-- <mat-icon>{{ showDeletedClasses ? 'visibility' : 'visibility_off' }}</mat-icon> -->
-        </button>
-        <!-- <button 
           mat-raised-button 
           color="primary" 
           (click)="toggleAddForm()"
           class="add-btn"
-        > 
-           <mat-icon>add</mat-icon> Add Class
-       </button> -->
+        >
+          <mat-icon>add</mat-icon> Add Class
+        </button>
       </div>
     </div>
 
@@ -375,18 +362,10 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="toggleEditForm(schoolClass)" *ngIf="schoolClass.isActive !== false">
+              <button mat-menu-item (click)="toggleEditForm(schoolClass)">
                 <mat-icon>edit</mat-icon>
                 <span>Edit</span>
               </button>
-              <ng-container *ngIf="schoolClass.isActive !== false; else deletedMenu">
-              </ng-container>
-              <ng-template #deletedMenu>
-                <button mat-menu-item (click)="reactivateClass(schoolClass)">
-                  <mat-icon color="accent">restore</mat-icon>
-                  <span>Reactivate</span>
-                </button>
-              </ng-template>
             </mat-menu>
           </mat-card-header>
 
